@@ -11,6 +11,8 @@
     <modules>
         <module>mazinrpcaiser-common</module>
         <module>mazinrpcaiser-server</module>
+        <module>mazinrpcaiser-client</module>
+        <module>mazinrpcaiser-client-tests</module>
     </modules>
     <dependencies>
         <dependency>
@@ -28,7 +30,26 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.3.2</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 
 </project>

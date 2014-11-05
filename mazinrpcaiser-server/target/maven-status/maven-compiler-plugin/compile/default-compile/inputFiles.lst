@@ -1,0 +1,12 @@
+/Users/mnix05/Projects/MazinRPCaiser/mazinrpcaiser-server/src/main/java/br/com/mnix/mazinrpcaiser/server/DataGridFactory.java
+/Users/mnix05/Projects/MazinRPCaiser/mazinrpcaiser-server/src/main/java/br/com/mnix/mazinrpcaiser/server/ActionHandlerFactory.java
+/Users/mnix05/Projects/MazinRPCaiser/mazinrpcaiser-server/src/main/java/br/com/mnix/mazinrpcaiser/server/ServerApp.java
+/Users/mnix05/Projects/MazinRPCaiser/mazinrpcaiser-server/src/main/java/br/com/mnix/mazinrpcaiser/server/DefaultDataHandler.java
+/Users/mnix05/Projects/MazinRPCaiser/mazinrpcaiser-server/src/main/java/br/com/mnix/mazinrpcaiser/server/OpenSessionHandler.java
+/Users/mnix05/Projects/MazinRPCaiser/mazinrpcaiser-server/src/main/java/br/com/mnix/mazinrpcaiser/server/DataGrid.java
+/Users/mnix05/Projects/MazinRPCaiser/mazinrpcaiser-server/src/main/java/br/com/mnix/mazinrpcaiser/server/TaskReceiver.java
+/Users/mnix05/Projects/MazinRPCaiser/mazinrpcaiser-server/src/main/java/br/com/mnix/mazinrpcaiser/server/CloseSessionDataHandler.java
+/Users/mnix05/Projects/MazinRPCaiser/mazinrpcaiser-server/src/main/java/br/com/mnix/mazinrpcaiser/server/MapContext.java
+/Users/mnix05/Projects/MazinRPCaiser/mazinrpcaiser-server/src/main/java/br/com/mnix/mazinrpcaiser/server/IDataGrid.java
+/Users/mnix05/Projects/MazinRPCaiser/mazinrpcaiser-server/src/main/java/br/com/mnix/mazinrpcaiser/server/IContext.java
+/Users/mnix05/Projects/MazinRPCaiser/mazinrpcaiser-server/src/main/java/br/com/mnix/mazinrpcaiser/server/IActionHandler.java

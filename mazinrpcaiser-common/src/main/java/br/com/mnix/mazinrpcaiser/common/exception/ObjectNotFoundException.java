@@ -5,7 +5,7 @@ package br.com.mnix.mazinrpcaiser.common.exception;
  *
  * @author mnix05
  */
-public class ObjectNotFoundException extends ServerException {
+public class ObjectNotFoundException extends ServerExecutionException {
 	private static final long serialVersionUID = -2572157098664952735L;
 
 	public ObjectNotFoundException() {
