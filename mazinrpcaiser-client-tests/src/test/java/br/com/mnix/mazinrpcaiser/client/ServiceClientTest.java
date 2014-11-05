@@ -19,12 +19,12 @@ import static org.junit.Assert.*;
  */
 public class ServiceClientTest {
 	@Before
-	public void Setup() {
+	public void setup() {
 		HazelcastUtils.raiseHazelcast();
 	}
 
 	@After
-	public void Shutdown() {
+	public void shutdown() {
 		HazelcastUtils.shutdowHazelcast();
 	}
 
@@ -87,12 +87,9 @@ public class ServiceClientTest {
 
 	private static class StubActionData implements IReturn<String> {
 		private static final long serialVersionUID = 1650940652510382667L;
-		@Nonnull private Integer mFoo;
+		@Nonnull private final Integer mFoo;
 		@Nonnull public Integer getFoo() {
 		    return mFoo;
-		}
-		public void setFoo(@Nonnull Integer value) {
-		    mFoo = value;
 		}
 
 		public StubActionData(@Nonnull Integer foo) {

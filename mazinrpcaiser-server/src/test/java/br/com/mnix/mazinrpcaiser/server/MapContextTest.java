@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("MagicNumber")
 public class MapContextTest {
 	@Test
 	public void testAddObject() throws Exception {

@@ -22,6 +22,7 @@ public abstract class DefaultDataHandler<T extends IActionData> implements IActi
 	@Nullable protected abstract Serializable processActionForReal(@Nonnull InputAction action, @Nonnull T actionData,
 																   @Nonnull IDataGrid dataGrid);
 
+	@SuppressWarnings("unchecked")
 	@Nullable
 	@Override
 	public Serializable processAction(@Nonnull InputAction action, @Nonnull IDataGrid dataGrid) throws Exception {

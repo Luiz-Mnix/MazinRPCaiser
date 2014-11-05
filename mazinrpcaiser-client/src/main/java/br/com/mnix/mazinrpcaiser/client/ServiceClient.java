@@ -21,7 +21,6 @@ public class ServiceClient implements MessageListener {
 	private static final int DEFAULT_TIMEOUT = 10 * 1000; // 10 seconds
 
 	@Nonnull private final Map<String, Semaphore> mSemaphores = new HashMap<>();
-	@Nonnull private final Map<String, Timer> mTimers = new HashMap<>();
 	@Nonnull private final Map<String, OutputAction> mOutputActions = new HashMap<>();
 	@Nonnull private final Object mLock = new Object();
 
@@ -31,6 +30,7 @@ public class ServiceClient implements MessageListener {
 		mClient = client;
 	}
 
+	@SuppressWarnings("ThrowableResultOfMethodCallIgnored")
 	@Nullable
 	public Serializable requestAction(@Nonnull IActionData actionData, @Nonnull SessionMetadata session, int timeout) throws InterruptedException, ServerExecutionException {
 		String topicId = UUID.randomUUID().toString();
@@ -38,12 +38,13 @@ public class ServiceClient implements MessageListener {
 		mSemaphores.put(topicId, semaphore);
 
 		InputAction inputAction = new InputAction(topicId, session, actionData);
-		mClient.addListener(this, topicId);
+		String listenerId = mClient.addListener(topicId, this);
 		mClient.sendData(ActionDataUtils.getActionType(actionData), inputAction);
 
 		new Timer().schedule(new TimeoutTimer(topicId, session), timeout);
 		semaphore.acquire();
 
+		mClient.removeListener(topicId, listenerId);
 		OutputAction returnedAction = mOutputActions.get(topicId);
 		mOutputActions.remove(topicId);
 
@@ -60,6 +61,7 @@ public class ServiceClient implements MessageListener {
 		return requestAction(actionData, session, DEFAULT_TIMEOUT);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Nullable
 	public <T extends Serializable> T requestAction(@Nonnull IReturn<T> actionData, @Nonnull SessionMetadata session, int timeout)
 			throws ServerExecutionException, InterruptedException {

@@ -104,13 +104,13 @@ public class DataGridTest {
 
 		// Act
 		dataGrid.initialize();
-		final String listenerId = dataGrid.addListener(listener, topicId);
+		final String listenerId = dataGrid.addListener(topicId, listener);
 		dataGrid.postNotification(topicId, "foo");
 		semaphore.acquire();
 
 		// Assert
 		assertEquals("foo", data[0]);
-		dataGrid.removeListener(listenerId, topicId);
+		dataGrid.removeListener(topicId, listenerId);
 		new Timer().schedule(timeout, 1000);
 		dataGrid.postNotification(topicId, "bar");
 		semaphore.acquire();

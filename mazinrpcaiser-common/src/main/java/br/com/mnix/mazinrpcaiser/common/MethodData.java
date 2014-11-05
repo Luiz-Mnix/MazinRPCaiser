@@ -27,6 +27,6 @@ public class MethodData extends DefaultObjectActionData implements IReturn<Seria
 	protected MethodData(@Nonnull String objectId, @Nonnull String methodName, @Nullable Serializable[] parameters) {
 		super(objectId);
 		mMethodName = methodName;
-		mParameters = parameters == null ? null : Arrays.copyOf(parameters, parameters.length);;
+		mParameters = parameters == null ? null : Arrays.copyOf(parameters, parameters.length);
 	}
 }

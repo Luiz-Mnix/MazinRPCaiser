@@ -13,6 +13,7 @@ import java.util.Map;
 public class MapContext implements IContext {
 	@Nonnull private final Map<String, Serializable> mInnerMap;
 
+	@SuppressWarnings("AssignmentToCollectionOrArrayFieldFromParameter")
 	public MapContext(@Nonnull Map<String, Serializable> innerMap) {
 		mInnerMap = innerMap;
 	}
@@ -22,6 +23,7 @@ public class MapContext implements IContext {
 		mInnerMap.put(objectId, object);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Nullable
 	@Override
 	public <T extends Serializable> T getObject(@Nonnull String objectId) {

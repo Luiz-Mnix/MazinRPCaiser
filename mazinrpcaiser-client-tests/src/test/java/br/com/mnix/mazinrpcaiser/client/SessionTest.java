@@ -7,8 +7,6 @@ import org.junit.Test;
 
 import java.util.concurrent.BlockingQueue;
 
-import static org.apache.commons.lang3.Validate.*;
-
 import static org.junit.Assert.*;
 
 /**
@@ -18,12 +16,12 @@ import static org.junit.Assert.*;
  */
 public class SessionTest {
 	@Before
-	public void Setup() {
+	public void setup() {
 		HazelcastUtils.raiseHazelcast();
 	}
 
 	@After
-	public void Shutdown() {
+	public void shutdown() {
 		HazelcastUtils.shutdowHazelcast();
 	}
 

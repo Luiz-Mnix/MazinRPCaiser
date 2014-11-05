@@ -15,6 +15,7 @@ import static org.junit.Assert.*;
  *
  * @author mnix05
  */
+@SuppressWarnings("MagicNumber")
 public class DataGridClientTest implements MessageListener {
 	@BeforeClass
 	public static void Setup() {
@@ -84,7 +85,7 @@ public class DataGridClientTest implements MessageListener {
 		assertEquals("foo", data[0]);
 	}
 
-	private Semaphore mListenerSemaphore = new Semaphore(0);
+	private final Semaphore mListenerSemaphore = new Semaphore(0);
 
 	@Test
 	public void testAddListener_ShouldRespondAndFree() throws Exception {
@@ -103,7 +104,7 @@ public class DataGridClientTest implements MessageListener {
 
 		// Act
 		client.connect();
-		final String listenerId = client.addListener(this, topicId);
+		final String listenerId = client.addListener(topicId, this);
 		new Thread(responder).start();
 		mListenerSemaphore.acquire();
 		HazelcastUtils.removeListener(topicId, listenerId);

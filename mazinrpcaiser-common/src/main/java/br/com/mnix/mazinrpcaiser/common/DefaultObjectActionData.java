@@ -1,7 +1,6 @@
 package br.com.mnix.mazinrpcaiser.common;
 
 import javax.annotation.Nonnull;
-import java.io.Serializable;
 
 /**
  * Created by mnix05 on 10/31/14.

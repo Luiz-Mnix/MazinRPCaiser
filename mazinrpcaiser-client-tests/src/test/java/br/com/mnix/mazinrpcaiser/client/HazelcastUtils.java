@@ -3,64 +3,59 @@ package br.com.mnix.mazinrpcaiser.client;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.Message;
-import com.hazelcast.core.MessageListener;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Semaphore;
 
 /**
  * Created by mnix05 on 11/4/14.
  *
  * @author mnix05
  */
-public class HazelcastUtils {
-	private static HazelcastInstance mHazelcastConnection = null;
-	private Map<String, Semaphore> mSemaphores = new HashMap<>();
+public final class HazelcastUtils {
+	private static HazelcastInstance sHazelcastConnection = null;
 
+	@SuppressWarnings("NonThreadSafeLazyInitialization")
 	public static void raiseHazelcast() {
-		if(mHazelcastConnection == null) {
+		if(sHazelcastConnection == null) {
 			Config config = new Config();
 			config.getNetworkConfig().getInterfaces().addInterface("127.0.0.1");
-			mHazelcastConnection = Hazelcast.newHazelcastInstance(config);
+			sHazelcastConnection = Hazelcast.newHazelcastInstance(config);
 		}
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	public static <T extends Serializable> BlockingQueue<T> getQueue(String id) {
-		if(mHazelcastConnection != null) {
-			return mHazelcastConnection.getQueue(id);
+		if(sHazelcastConnection != null) {
+			return sHazelcastConnection.getQueue(id);
 		}
 
 		return null;
 	}
 
 	public static void shutdowHazelcast() {
-		if(mHazelcastConnection != null) {
-//			mHazelcastConnection.shutdown();
-		}
+//		if(sHazelcastConnection != null) {
+//			sHazelcastConnection.shutdown();
+//		}
 	}
 
-	public static String addListener(String topicId, MessageListener listener) {
-		if(mHazelcastConnection != null) {
-			return mHazelcastConnection.getTopic(topicId).addMessageListener(listener);
-		}
-
-		return null;
-	}
+// --Commented out by Inspection START (11/5/14, 1:53 PM):
+//	public static String addListener(String topicId, MessageListener listener) {
+//		if(sHazelcastConnection != null) {
+//			return sHazelcastConnection.getTopic(topicId).addMessageListener(listener);
+//		}
+//
+//		return null;
+//	}
+// --Commented out by Inspection STOP (11/5/14, 1:53 PM)
 
 	public static boolean removeListener(String topicId, String listenerId) {
-		if(mHazelcastConnection != null) {
-			return mHazelcastConnection.getTopic(topicId).removeMessageListener(listenerId);
-		}
-		return false;
+		return sHazelcastConnection != null && sHazelcastConnection.getTopic(topicId).removeMessageListener(listenerId);
 	}
 
 	public static void postMessage(String topicId, Serializable data) {
-		if(mHazelcastConnection != null) {
-			mHazelcastConnection.getTopic(topicId).publish(data);
+		if(sHazelcastConnection != null) {
+			sHazelcastConnection.getTopic(topicId).publish(data);
 		}
 	}
 }

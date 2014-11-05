@@ -44,6 +44,7 @@ public final class Session {
 		}
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	public void invalidate() throws ServerExecutionException, InterruptedException {
 		if(isOpened()) {
 			mServiceClient.requestAction(new CloseSessionData(), getSessionMetadata());

@@ -16,6 +16,6 @@ public interface IDataGridClient {
 	void connect() throws ClusterUnavailableException;
 	void disconnect();
 	<T extends Serializable> void sendData(@Nonnull String repoId, @Nonnull T data) throws InterruptedException;
-	@Nonnull String addListener(@Nonnull MessageListener listener, @Nonnull String topic);
-	void removeListener(@Nonnull String listenerId, @Nonnull String topic);
+	@Nonnull <T> String addListener(@Nonnull String topicId, @Nonnull MessageListener<T> listener);
+	void removeListener(@Nonnull String topicId, @Nonnull String listenerId);
 }

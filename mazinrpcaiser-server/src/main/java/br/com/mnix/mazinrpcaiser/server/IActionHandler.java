@@ -12,5 +12,6 @@ import java.io.Serializable;
  * @author mnix05
  */
 public interface IActionHandler {
+	@SuppressWarnings("RedundantThrows")
 	@Nullable Serializable processAction(@Nonnull InputAction action, @Nonnull IDataGrid dataGrid) throws Exception;
 }

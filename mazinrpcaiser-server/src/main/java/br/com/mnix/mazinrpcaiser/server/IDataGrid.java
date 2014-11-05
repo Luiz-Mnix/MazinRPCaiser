@@ -1,6 +1,5 @@
 package br.com.mnix.mazinrpcaiser.server;
 
-import br.com.mnix.mazinrpcaiser.common.InputAction;
 import com.hazelcast.core.MessageListener;
 
 import javax.annotation.Nonnull;
@@ -20,6 +19,6 @@ public interface IDataGrid {
 	void deleteContext(@Nonnull String contextId);
 	@Nonnull <T> BlockingQueue<T> getCommandQueue(@Nonnull String commandName);
 	<T extends Serializable> void postNotification(String topicId, T data);
-	@Nonnull <T> String addListener(@Nonnull MessageListener<T> listener, @Nonnull String topicId);
-	void removeListener(@Nonnull String listenerId, @Nonnull String topicId);
+	@Nonnull <T> String addListener(@Nonnull String topicId, @Nonnull MessageListener<T> listener);
+	void removeListener(@Nonnull String topicId, @Nonnull String listenerId);
 }

@@ -6,6 +6,8 @@ package br.com.mnix.mazinrpcaiser.client;
  * @author mnix05
  */
 public class ClusterUnavailableException extends Exception {
+	private static final long serialVersionUID = 8894660807633041369L;
+
 	public ClusterUnavailableException() {
 	}
 
