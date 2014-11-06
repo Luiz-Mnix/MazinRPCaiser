@@ -36,7 +36,7 @@ public class DataGrid implements IDataGrid {
 	}
 
 	@Override
-	public void initialize() {
+	public void raise() {
 		if(!isOn()) {
 			Config config = new Config();
 			config.getNetworkConfig().getInterfaces().addInterface("127.0.0.1");
@@ -64,7 +64,7 @@ public class DataGrid implements IDataGrid {
 			context.clear();
 		}
 
-		return new MapContext(context);
+		return new MapContext(contextId, context);
 	}
 
 	@SuppressWarnings("ConstantConditions")

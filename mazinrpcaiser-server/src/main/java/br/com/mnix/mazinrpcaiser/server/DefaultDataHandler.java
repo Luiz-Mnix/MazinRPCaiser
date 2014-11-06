@@ -2,6 +2,7 @@ package br.com.mnix.mazinrpcaiser.server;
 
 import br.com.mnix.mazinrpcaiser.common.IActionData;
 import br.com.mnix.mazinrpcaiser.common.InputAction;
+import br.com.mnix.mazinrpcaiser.common.exception.ServiceHasNoDefaultImplementationException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,15 +20,20 @@ public abstract class DefaultDataHandler<T extends IActionData> implements IActi
 		mDataClass = dataClass;
 	}
 
-	@Nullable protected abstract Serializable processActionForReal(@Nonnull InputAction action, @Nonnull T actionData,
-																   @Nonnull IDataGrid dataGrid);
+	@Nullable protected abstract Object processActionForReal(@Nonnull T actionData, @Nonnull IContext context,
+															 @Nonnull IDataGrid dataGrid) throws Exception;
 
 	@SuppressWarnings("unchecked")
 	@Nullable
 	@Override
 	public Serializable processAction(@Nonnull InputAction action, @Nonnull IDataGrid dataGrid) throws Exception {
 		if(action.getActionData().getClass().isAssignableFrom(mDataClass)) {
-			return processActionForReal(action, (T) action.getActionData(), dataGrid);
+			// TODO translate data
+			return (Serializable) processActionForReal(
+					(T) action.getActionData(),
+					dataGrid.retrieveContext(action.getSessionMetadata().getContextId(), false),
+					dataGrid
+			);
 		}
 
 		throw new IllegalArgumentException(

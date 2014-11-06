@@ -20,7 +20,7 @@ public class CloseSessionHandlerTest {
 		final CloseSessionData data1 = new CloseSessionData();
 		final InputAction action1 = new InputAction(topicId, session, data1);
 
-		dataGrid.initialize();
+		dataGrid.raise();
 		dataGrid.retrieveContext(contextId, false).putObject("key1", "bar");
 		final Serializable processed1 = handler.processAction(action1, dataGrid);
 

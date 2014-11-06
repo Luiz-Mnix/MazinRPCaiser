@@ -20,11 +20,11 @@ public class MethodData extends DefaultObjectActionData implements IReturn<Seria
 	}
 
 	@Nullable private final Serializable[] mParameters;
-	@Nullable public Serializable[] getParameters() {
+	@Nullable public Serializable[] getArgs() {
 		return mParameters == null ? null : Arrays.copyOf(mParameters, mParameters.length);
 	}
 
-	protected MethodData(@Nonnull String objectId, @Nonnull String methodName, @Nullable Serializable[] parameters) {
+	public MethodData(@Nonnull String objectId, @Nonnull String methodName, @Nullable Serializable[] parameters) {
 		super(objectId);
 		mMethodName = methodName;
 		mParameters = parameters == null ? null : Arrays.copyOf(parameters, parameters.length);

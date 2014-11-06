@@ -19,9 +19,9 @@ public class CloseSessionHandler extends DefaultDataHandler<CloseSessionData> {
 
 	@Nullable
 	@Override
-	protected Serializable processActionForReal(@Nonnull InputAction action, @Nonnull CloseSessionData actionData,
-												@Nonnull IDataGrid dataGrid) {
-		dataGrid.retrieveContext(action.getSessionMetadata().getContextId(), true);
+	protected Object processActionForReal(@Nonnull CloseSessionData actionData, @Nonnull IContext context,
+												@Nonnull IDataGrid dataGrid) throws Exception {
+		dataGrid.deleteContext(context.getId());
 		return null;
 	}
 }

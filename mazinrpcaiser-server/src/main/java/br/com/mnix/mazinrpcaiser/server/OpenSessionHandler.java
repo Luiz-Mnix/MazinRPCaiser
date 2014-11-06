@@ -1,6 +1,5 @@
 package br.com.mnix.mazinrpcaiser.server;
 
-import br.com.mnix.mazinrpcaiser.common.InputAction;
 import br.com.mnix.mazinrpcaiser.common.OpenSessionData;
 
 import javax.annotation.Nonnull;
@@ -20,8 +19,9 @@ public class OpenSessionHandler extends DefaultDataHandler<OpenSessionData> {
 
 	@Nullable
 	@Override
-	protected Serializable processActionForReal(@Nonnull InputAction action, @Nonnull OpenSessionData actionData, @Nonnull IDataGrid dataGrid) {
-		dataGrid.retrieveContext(action.getSessionMetadata().getContextId(), actionData.getOverwritesExisting());
+	protected Object processActionForReal(@Nonnull OpenSessionData actionData, @Nonnull IContext context,
+										  @Nonnull IDataGrid dataGrid) throws Exception {
+		dataGrid.retrieveContext(context.getId(), actionData.getOverwritesExisting());
 		return null;
 	}
 }

@@ -21,7 +21,7 @@ public class DataGridTest {
 		final String contextId = "context";
 
 		// Act
-		dataGrid.initialize();
+		dataGrid.raise();
 		IContext context = dataGrid.retrieveContext(contextId, true);
 
 		// Assert
@@ -40,7 +40,7 @@ public class DataGridTest {
 		final String contextId = "context2";
 
 		// Act
-		dataGrid.initialize();
+		dataGrid.raise();
 		IContext context = dataGrid.retrieveContext(contextId, true);
 		context.putObject("foo", "foo");
 
@@ -71,12 +71,13 @@ public class DataGridTest {
 		};
 
 		// Act
-		dataGrid.initialize();
+		dataGrid.raise();
 		new Thread(putter).start();
 		final BlockingQueue<String> queue = dataGrid.getCommandQueue(queueId);
 		String command = queue.poll(2, TimeUnit.SECONDS);
 
 		// Assert
+
 		assertEquals("foo", command);
 		dataGrid.shutdown();
 	}
@@ -103,7 +104,7 @@ public class DataGridTest {
 		};
 
 		// Act
-		dataGrid.initialize();
+		dataGrid.raise();
 		final String listenerId = dataGrid.addListener(topicId, listener);
 		dataGrid.postNotification(topicId, "foo");
 		semaphore.acquire();

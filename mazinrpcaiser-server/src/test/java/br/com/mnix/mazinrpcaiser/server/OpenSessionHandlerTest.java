@@ -22,7 +22,7 @@ public class OpenSessionHandlerTest {
 		final OpenSessionData data2 = new OpenSessionData(true);
 		final InputAction action2 = new InputAction(topicId, session, data2);
 
-		dataGrid.initialize();
+		dataGrid.raise();
 		final Serializable processed1 = handler.processAction(action1, dataGrid);
 		dataGrid.retrieveContext(contextId, false).putObject("key1", "bar");
 		final Serializable processed2 = handler.processAction(action2, dataGrid);
