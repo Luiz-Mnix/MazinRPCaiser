@@ -2,6 +2,8 @@ package br.com.mnix.mazinrpcaiser.client;
 
 import br.com.mnix.mazinrpcaiser.common.*;
 import br.com.mnix.mazinrpcaiser.common.exception.ServerExecutionException;
+import br.com.mnix.mazinrpcaiser.common.request.IReturn;
+import br.com.mnix.mazinrpcaiser.common.request.RequestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,20 +36,20 @@ public class ServiceClientTest {
 		final String clusterAddress = "127.0.0.1";
 		final IDataGridClient client = new DataGridClient(clusterAddress);
 		final ServiceClient serviceClient = new ServiceClient(client);
-		final SessionMetadata session = new SessionMetadata("foobar", "127.0.0.1");
+		final SessionData session = new SessionData("foobar", "127.0.0.1");
 		final Runnable responder = new Runnable() {
 			@Override
 			public void run() {
 				try {
-					BlockingQueue<InputAction> queue =
-							HazelcastUtils.getQueue(ActionDataUtils.getActionType(StubActionData.class));
-					InputAction action = queue.take();
+					BlockingQueue<RequestEnvelope> queue =
+							HazelcastUtils.getQueue(RequestUtils.getRequestGroup(StubActionData.class));
+					RequestEnvelope action = queue.take();
 					HazelcastUtils.postMessage(
 							action.getTopicId(),
-							new OutputAction(
+							new ResponseEnvelope(
 									action.getTopicId(),
 									session,
-									((StubActionData)action.getActionData()).getFoo() + "_foo",
+									((StubActionData)action.getRequest()).getFoo() + "_foo",
 									null
 							)
 					);
@@ -60,7 +62,7 @@ public class ServiceClientTest {
 		// Act
 		client.connect();
 		new Thread(responder).start();
-		final String returned = serviceClient.requestAction(new StubActionData(2), session);
+		final String returned = serviceClient.makeRequest(new StubActionData(2), session);
 
 		// Assert
 		assertEquals("2_foo", returned);
@@ -72,12 +74,12 @@ public class ServiceClientTest {
 		final String clusterAddress = "127.0.0.1";
 		final IDataGridClient client = new DataGridClient(clusterAddress);
 		final ServiceClient serviceClient = new ServiceClient(client);
-		final SessionMetadata session = new SessionMetadata("foobar", "127.0.0.1");
+		final SessionData session = new SessionData("foobar", "127.0.0.1");
 
 		// Act
 		client.connect();
 		try {
-			serviceClient.requestAction(new StubActionData(2), session);
+			serviceClient.makeRequest(new StubActionData(2), session);
 		} catch (ServerExecutionException e) {
 			throw e.getCause();
 		} catch (InterruptedException e) {

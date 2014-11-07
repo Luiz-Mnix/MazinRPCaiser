@@ -13,7 +13,7 @@ import java.io.Serializable;
 public interface IDataGridClient {
 	@Nonnull String getClusterAddress();
 	boolean isConnected();
-	void connect() throws ClusterUnavailableException;
+	void connect() throws DataGridUnavailableException;
 	void disconnect();
 	<T extends Serializable> void sendData(@Nonnull String repoId, @Nonnull T data) throws InterruptedException;
 	@Nonnull <T> String addListener(@Nonnull String topicId, @Nonnull MessageListener<T> listener);

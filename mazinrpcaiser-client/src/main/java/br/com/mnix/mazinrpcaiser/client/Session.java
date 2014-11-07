@@ -1,8 +1,8 @@
 package br.com.mnix.mazinrpcaiser.client;
 
-import br.com.mnix.mazinrpcaiser.common.CloseSessionData;
-import br.com.mnix.mazinrpcaiser.common.OpenSessionData;
-import br.com.mnix.mazinrpcaiser.common.SessionMetadata;
+import br.com.mnix.mazinrpcaiser.common.SessionData;
+import br.com.mnix.mazinrpcaiser.common.request.CloseSessionRequest;
+import br.com.mnix.mazinrpcaiser.common.request.OpenSessionRequest;
 import br.com.mnix.mazinrpcaiser.common.exception.ServerExecutionException;
 
 import javax.annotation.Nonnull;
@@ -14,20 +14,20 @@ import javax.annotation.Nullable;
  * @author mnix05
  */
 public final class Session {
-	@Nonnull private final SessionMetadata mSessionMetadata;
-	@Nonnull public SessionMetadata getSessionMetadata() {
-		return mSessionMetadata;
+	@Nonnull private final SessionData mSessionData;
+	@Nonnull public SessionData getSessionData() {
+		return mSessionData;
 	}
 
 	@Nonnull private final IDataGridClient mDataGrid;
-	@Nullable private ServiceClient mServiceClient = null;
+	@Nullable private IServiceClient mServiceClient = null;
 
 	public boolean isOpened() {
 		return mDataGrid.isConnected() && mServiceClient != null;
 	}
 
 	public Session(@Nonnull String contextId, @Nonnull String serverAddress) {
-		mSessionMetadata = new SessionMetadata(contextId, serverAddress);
+		mSessionData = new SessionData(contextId, serverAddress);
 		mDataGrid = DataGridClientFactory.createDataGrid(serverAddress);
 	}
 
@@ -36,18 +36,18 @@ public final class Session {
 	}
 
 	public void open(boolean overwritesExisting)
-			throws ClusterUnavailableException, ServerExecutionException, InterruptedException {
+			throws DataGridUnavailableException, ServerExecutionException, InterruptedException {
 		if(!isOpened()) {
 			mDataGrid.connect();
 			mServiceClient = new ServiceClient(mDataGrid);
-			mServiceClient.requestAction(new OpenSessionData(overwritesExisting), getSessionMetadata());
+			mServiceClient.makeRequest(new OpenSessionRequest(overwritesExisting), getSessionData());
 		}
 	}
 
 	@SuppressWarnings("ConstantConditions")
 	public void invalidate() throws ServerExecutionException, InterruptedException {
 		if(isOpened()) {
-			mServiceClient.requestAction(new CloseSessionData(), getSessionMetadata());
+			mServiceClient.makeRequest(new CloseSessionRequest(), getSessionData());
 			mServiceClient = null;
 			mDataGrid.disconnect();
 		}

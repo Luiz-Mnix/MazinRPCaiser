@@ -36,14 +36,14 @@ public class DataGridClient implements IDataGridClient {
 	}
 
 	@Override
-	public void connect() throws ClusterUnavailableException {
+	public void connect() throws DataGridUnavailableException {
 		if(!isConnected()) {
 			ClientConfig clientConfig = new ClientConfig();
 			clientConfig.getNetworkConfig().addAddress(mClusterAddress);
 			try {
 				mHazelcastConnection = HazelcastClient.newHazelcastClient(clientConfig);
 			} catch(IllegalStateException e) {
-				throw new ClusterUnavailableException(e);
+				throw new DataGridUnavailableException(e);
 			}
 		}
 	}

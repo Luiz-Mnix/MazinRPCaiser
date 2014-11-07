@@ -1,10 +1,13 @@
 package br.com.mnix.mazinrpcaiser.server;
 
-import br.com.mnix.mazinrpcaiser.common.ActionDataUtils;
-import br.com.mnix.mazinrpcaiser.common.IActionData;
-import br.com.mnix.mazinrpcaiser.common.InputAction;
-import br.com.mnix.mazinrpcaiser.common.OutputAction;
+import br.com.mnix.mazinrpcaiser.common.request.RequestUtils;
+import br.com.mnix.mazinrpcaiser.common.RequestEnvelope;
+import br.com.mnix.mazinrpcaiser.common.ResponseEnvelope;
 import br.com.mnix.mazinrpcaiser.common.exception.ServerExecutionException;
+import br.com.mnix.mazinrpcaiser.server.data.IDataGrid;
+import br.com.mnix.mazinrpcaiser.server.service.RequestHasNoServiceException;
+import br.com.mnix.mazinrpcaiser.server.service.IService;
+import br.com.mnix.mazinrpcaiser.server.service.ServiceFactory;
 
 import java.io.Serializable;
 import java.util.concurrent.BlockingQueue;
@@ -14,41 +17,42 @@ import java.util.concurrent.BlockingQueue;
  *
  * @author mnix05
  */
-public class TaskReceiver<TMetadata extends IActionData> implements Runnable {
-	private final Class<TMetadata> mMetadataType;
+public class TaskReceiver<TMetadata extends Serializable> implements Runnable {
+	private final Class<TMetadata> mRequestClass;
 	private final IDataGrid mDataGrid;
-	private final IActionHandler mActionHandler;
+	private final IService mService;
 
-	public TaskReceiver(Class<TMetadata> metadataType, IDataGrid dataGrid) throws DataTypeHasNoHandlerException {
-		mMetadataType = metadataType;
+	public TaskReceiver(Class<TMetadata> requestClass, IDataGrid dataGrid) throws RequestHasNoServiceException {
+		mRequestClass = requestClass;
 		mDataGrid = dataGrid;
-		mActionHandler = ActionHandlerFactory.handlerForActionDataType(metadataType);
+		mService = ServiceFactory.getServiceForRequest(requestClass);
 	}
 
 	@Override
 	public void run() {
-		BlockingQueue<InputAction> commands = mDataGrid.getCommandQueue(ActionDataUtils.getActionType(mMetadataType));
+		BlockingQueue<RequestEnvelope> commands
+				= mDataGrid.getCommandQueue(RequestUtils.getRequestGroup(mRequestClass));
+
 		while (mDataGrid.isOn()) {
-			InputAction action = null;
-			Serializable processedData = null;
+			RequestEnvelope requestEnvelope = null;
+			Serializable response = null;
 			ServerExecutionException exception = null;
 			try {
-				action = commands.take();
-				processedData = mActionHandler.processAction(action, mDataGrid);
-				// TODO translate
+				requestEnvelope = commands.take();
+				response = mService.processRequest(requestEnvelope, mDataGrid);
 			} catch (InterruptedException ignored) {
 				continue;
 			} catch (Exception ex) {
 				exception = new ServerExecutionException(ex);
 			}
-			assert action != null;
-			OutputAction output = new OutputAction(
-					action.getTopicId(),
-					action.getSessionMetadata(),
-					processedData,
+			assert requestEnvelope != null;
+			ResponseEnvelope output = new ResponseEnvelope(
+					requestEnvelope.getTopicId(),
+					requestEnvelope.getSessionData(),
+					response,
 					exception
 			);
-			mDataGrid.postNotification(action.getTopicId(), output);
+			mDataGrid.postNotification(requestEnvelope.getTopicId(), output);
 		}
 	}
 }

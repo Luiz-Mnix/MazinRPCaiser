@@ -1,5 +1,6 @@
 package br.com.mnix.mazinrpcaiser.server;
 
+import br.com.mnix.mazinrpcaiser.server.data.MapContext;
 import org.junit.Test;
 
 import java.io.Serializable;

@@ -1,0 +1,29 @@
+package br.com.mnix.mazinrpcaiser.client;
+
+import br.com.mnix.mazinrpcaiser.common.SessionData;
+import br.com.mnix.mazinrpcaiser.common.exception.ServerExecutionException;
+import br.com.mnix.mazinrpcaiser.common.request.IReturn;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.Serializable;
+
+/**
+ * Created by mnix05 on 11/7/14.
+ *
+ * @author mnix05
+ */
+public interface IServiceClient {
+	@Nullable Serializable makeRequest(@Nonnull Serializable request, @Nonnull SessionData session, int timeout)
+			throws InterruptedException, ServerExecutionException;
+
+	@Nullable Serializable makeRequest(@Nonnull Serializable actionData, @Nonnull SessionData session)
+			throws ServerExecutionException, InterruptedException;
+
+	@Nullable <T extends Serializable> T makeRequest(@Nonnull IReturn<T> actionData, @Nonnull SessionData session,
+													 int timeout)
+			throws ServerExecutionException, InterruptedException;
+
+	@Nullable <T extends Serializable> T makeRequest(@Nonnull IReturn<T> actionData, @Nonnull SessionData session)
+			throws ServerExecutionException, InterruptedException;
+}
