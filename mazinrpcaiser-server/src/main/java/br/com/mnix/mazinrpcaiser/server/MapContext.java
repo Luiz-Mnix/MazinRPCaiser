@@ -1,7 +1,8 @@
 package br.com.mnix.mazinrpcaiser.server;
 
+import br.com.mnix.mazinrpcaiser.common.exception.ObjectNotFoundException;
+
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -14,8 +15,16 @@ public class MapContext implements IContext {
 	@Nonnull private final Map<String, Serializable> mInnerMap;
 
 	@SuppressWarnings("AssignmentToCollectionOrArrayFieldFromParameter")
-	public MapContext(@Nonnull Map<String, Serializable> innerMap) {
+	public MapContext(@Nonnull String id, @Nonnull Map<String, Serializable> innerMap) {
+		mId = id;
 		mInnerMap = innerMap;
+	}
+
+	@Nonnull private final String mId;
+	@Nonnull
+	@Override
+	public String getId() {
+		return mId;
 	}
 
 	@Override
@@ -23,17 +32,23 @@ public class MapContext implements IContext {
 		mInnerMap.put(objectId, object);
 	}
 
+	@Nonnull
 	@SuppressWarnings("unchecked")
-	@Nullable
 	@Override
-	public <T extends Serializable> T getObject(@Nonnull String objectId) {
-		return (T) mInnerMap.get(objectId);
+	public <T extends Serializable> T getObject(@Nonnull String objectId) throws ObjectNotFoundException {
+		return (T) getSerializable(objectId);
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
-	public Serializable getSerializable(@Nonnull String objectId) {
-		return mInnerMap.get(objectId);
+	public Serializable getSerializable(@Nonnull String objectId) throws ObjectNotFoundException {
+		Serializable obj = mInnerMap.get(objectId);
+
+		if(obj == null) {
+			throw new ObjectNotFoundException();
+		}
+
+		return obj;
 	}
 
 	@Override

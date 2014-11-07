@@ -13,7 +13,7 @@ public class MapContextTest {
 	public void testAddObject() throws Exception {
 		// Arrange
 		final HashMap<String, Serializable> innerMap = new HashMap<>();
-		final MapContext context = new MapContext(innerMap);
+		final MapContext context = new MapContext("foo", innerMap);
 
 		// Act
 		innerMap.put("key1", "foo");

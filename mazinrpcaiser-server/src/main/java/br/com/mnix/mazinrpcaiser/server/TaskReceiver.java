@@ -19,7 +19,7 @@ public class TaskReceiver<TMetadata extends IActionData> implements Runnable {
 	private final IDataGrid mDataGrid;
 	private final IActionHandler mActionHandler;
 
-	public TaskReceiver(Class<TMetadata> metadataType, IDataGrid dataGrid) {
+	public TaskReceiver(Class<TMetadata> metadataType, IDataGrid dataGrid) throws DataTypeHasNoHandlerException {
 		mMetadataType = metadataType;
 		mDataGrid = dataGrid;
 		mActionHandler = ActionHandlerFactory.handlerForActionDataType(metadataType);

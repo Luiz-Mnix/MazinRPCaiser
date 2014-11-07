@@ -13,7 +13,7 @@ import java.util.concurrent.BlockingQueue;
  */
 public interface IDataGrid {
 	boolean isOn();
-	void initialize();
+	void raise();
 	void shutdown();
 	@Nonnull IContext retrieveContext(@Nonnull String contextId, boolean overwrites);
 	void deleteContext(@Nonnull String contextId);
