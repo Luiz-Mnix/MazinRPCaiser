@@ -14,5 +14,5 @@ import java.io.Serializable;
  */
 public interface IService {
 	@SuppressWarnings("RedundantThrows")
-	@Nullable Serializable processAction(@Nonnull RequestEnvelope action, @Nonnull IDataGrid dataGrid) throws Exception;
+	@Nullable Serializable processRequest(@Nonnull RequestEnvelope action, @Nonnull IDataGrid dataGrid) throws Exception;
 }

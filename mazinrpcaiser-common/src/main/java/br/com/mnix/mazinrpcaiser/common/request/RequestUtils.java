@@ -11,10 +11,10 @@ public final class RequestUtils {
 	private RequestUtils() {}
 
 	public static String getRequestGroup(Serializable actionData) {
-		return getActionType(actionData.getClass());
+		return getRequestGroup(actionData.getClass());
 	}
 
-	public static String getActionType(Class<? extends Serializable> actionDataClass) {
+	public static String getRequestGroup(Class<? extends Serializable> actionDataClass) {
 		return actionDataClass.getCanonicalName();
 	}
 }

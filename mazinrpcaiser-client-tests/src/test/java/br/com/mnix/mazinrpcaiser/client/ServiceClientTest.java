@@ -42,7 +42,7 @@ public class ServiceClientTest {
 			public void run() {
 				try {
 					BlockingQueue<RequestEnvelope> queue =
-							HazelcastUtils.getQueue(RequestUtils.getActionType(StubActionData.class));
+							HazelcastUtils.getQueue(RequestUtils.getRequestGroup(StubActionData.class));
 					RequestEnvelope action = queue.take();
 					HazelcastUtils.postMessage(
 							action.getTopicId(),

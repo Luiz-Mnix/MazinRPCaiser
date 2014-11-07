@@ -54,7 +54,7 @@ public class ServiceFactoryTest {
 	public static class Foo implements IService {
 		@Nullable
 		@Override
-		public Serializable processAction(@Nonnull RequestEnvelope action, @Nonnull IDataGrid dataGrid) throws Exception {
+		public Serializable processRequest(@Nonnull RequestEnvelope action, @Nonnull IDataGrid dataGrid) throws Exception {
 			return null;
 		}
 	}
@@ -67,7 +67,7 @@ public class ServiceFactoryTest {
 	public static class UnannotatedService implements IService {
 		@Nullable
 		@Override
-		public Serializable processAction(@Nonnull RequestEnvelope action, @Nonnull IDataGrid dataGrid) throws Exception {
+		public Serializable processRequest(@Nonnull RequestEnvelope action, @Nonnull IDataGrid dataGrid) throws Exception {
 			return null;
 		}
 	}
@@ -87,14 +87,14 @@ public class ServiceFactoryTest {
 		}
 		@Nullable
 		@Override
-		public Serializable processAction(@Nonnull RequestEnvelope action, @Nonnull IDataGrid dataGrid) throws Exception {
+		public Serializable processRequest(@Nonnull RequestEnvelope action, @Nonnull IDataGrid dataGrid) throws Exception {
 			throw new Exception();
 		}
 	}
 	public static class AbstractProblematicService implements IService {
 		@Nullable
 		@Override
-		public Serializable processAction(@Nonnull RequestEnvelope action, @Nonnull IDataGrid dataGrid) throws Exception {
+		public Serializable processRequest(@Nonnull RequestEnvelope action, @Nonnull IDataGrid dataGrid) throws Exception {
 			return null;
 		}
 	}

@@ -18,40 +18,41 @@ import java.util.concurrent.BlockingQueue;
  * @author mnix05
  */
 public class TaskReceiver<TMetadata extends Serializable> implements Runnable {
-	private final Class<TMetadata> mMetadataType;
+	private final Class<TMetadata> mRequestClass;
 	private final IDataGrid mDataGrid;
-	private final IService mActionHandler;
+	private final IService mService;
 
-	public TaskReceiver(Class<TMetadata> metadataType, IDataGrid dataGrid) throws RequestHasNoServiceException {
-		mMetadataType = metadataType;
+	public TaskReceiver(Class<TMetadata> requestClass, IDataGrid dataGrid) throws RequestHasNoServiceException {
+		mRequestClass = requestClass;
 		mDataGrid = dataGrid;
-		mActionHandler = ServiceFactory.getServiceForRequest(metadataType);
+		mService = ServiceFactory.getServiceForRequest(requestClass);
 	}
 
 	@Override
 	public void run() {
-		BlockingQueue<RequestEnvelope> commands = mDataGrid.getCommandQueue(RequestUtils.getActionType(mMetadataType));
+		BlockingQueue<RequestEnvelope> commands
+				= mDataGrid.getCommandQueue(RequestUtils.getRequestGroup(mRequestClass));
+
 		while (mDataGrid.isOn()) {
-			RequestEnvelope action = null;
-			Serializable processedData = null;
+			RequestEnvelope requestEnvelope = null;
+			Serializable response = null;
 			ServerExecutionException exception = null;
 			try {
-				action = commands.take();
-				processedData = mActionHandler.processAction(action, mDataGrid);
-				// TODO translate
+				requestEnvelope = commands.take();
+				response = mService.processRequest(requestEnvelope, mDataGrid);
 			} catch (InterruptedException ignored) {
 				continue;
 			} catch (Exception ex) {
 				exception = new ServerExecutionException(ex);
 			}
-			assert action != null;
+			assert requestEnvelope != null;
 			ResponseEnvelope output = new ResponseEnvelope(
-					action.getTopicId(),
-					action.getSessionData(),
-					processedData,
+					requestEnvelope.getTopicId(),
+					requestEnvelope.getSessionData(),
+					response,
 					exception
 			);
-			mDataGrid.postNotification(action.getTopicId(), output);
+			mDataGrid.postNotification(requestEnvelope.getTopicId(), output);
 		}
 	}
 }

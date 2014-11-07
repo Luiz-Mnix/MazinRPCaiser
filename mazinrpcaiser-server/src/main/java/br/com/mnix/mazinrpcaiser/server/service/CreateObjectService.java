@@ -29,8 +29,8 @@ public class CreateObjectService extends DefaultService<CreateObjectRequest> {
 	@SuppressWarnings("unchecked")
 	@Nullable
 	@Override
-	protected Object processActionForReal(@Nonnull CreateObjectRequest actionData, @Nonnull IContext context,
-										  @Nonnull IDataGrid dataGrid) throws Exception {
+	protected Object processRequestImpl(@Nonnull CreateObjectRequest actionData, @Nonnull IContext context,
+										@Nonnull IDataGrid dataGrid) throws Exception {
 		Class serviceClass = actionData.getServiceClass();
 
 		if(serviceClass.isAnnotationPresent(DistributedVersion.class)) {
@@ -47,7 +47,7 @@ public class CreateObjectService extends DefaultService<CreateObjectRequest> {
 					Constructor constructor = implementationClass.getConstructor(argsClasses);
 					Object obj;
 					try {
-						obj = constructor.newInstance(actionData.getInitializationArgs());
+						obj = constructor.newInstance((Object[]) actionData.getInitializationArgs());
 					} catch (InvocationTargetException e) {
 						throw (Exception) e.getCause();
 					}

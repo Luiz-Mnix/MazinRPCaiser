@@ -24,7 +24,7 @@ public class CloseSessionServiceTest {
 
 		dataGrid.raise();
 		dataGrid.retrieveContext(contextId, false).putObject("key1", "bar");
-		final Serializable processed1 = handler.processAction(action1, dataGrid);
+		final Serializable processed1 = handler.processRequest(action1, dataGrid);
 
 		assertNull(processed1);
 		assertEquals(0, dataGrid.retrieveContext(contextId, false).size());

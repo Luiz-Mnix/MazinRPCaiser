@@ -29,7 +29,7 @@ public class MethodServiceTest {
 		// Act
 		datagrid.raise();
 		datagrid.retrieveContext(contextId, true).putObject(objectId, obj);
-		final String returnedData = (String) handler.processAction(action, datagrid);
+		final String returnedData = (String) handler.processRequest(action, datagrid);
 
 		// Assert
 		assertEquals("3_foo", returnedData);
@@ -53,7 +53,7 @@ public class MethodServiceTest {
 		// Act
 		datagrid.raise();
 		datagrid.retrieveContext(contextId, true).putObject(objectId, obj);
-		handler.processAction(action, datagrid);
+		handler.processRequest(action, datagrid);
 		datagrid.shutdown();
 	}
 
@@ -73,7 +73,7 @@ public class MethodServiceTest {
 		// Act
 		datagrid.raise();
 		datagrid.retrieveContext(contextId, true).putObject(objectId, obj);
-		handler.processAction(action, datagrid);
+		handler.processRequest(action, datagrid);
 	}
 
 	@Test
@@ -93,7 +93,7 @@ public class MethodServiceTest {
 		// Act
 		datagrid.raise();
 		datagrid.retrieveContext(contextId, true).putObject(objectId, obj);
-		final float returnedData = (float) handler.processAction(action, datagrid);
+		final float returnedData = (float) handler.processRequest(action, datagrid);
 
 		// Assert
 		assertEquals(value, returnedData, 0);

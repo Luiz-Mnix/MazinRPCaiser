@@ -20,16 +20,16 @@ public abstract class DefaultService<T extends Serializable> implements IService
 		mDataClass = dataClass;
 	}
 
-	@Nullable protected abstract Object processActionForReal(@Nonnull T actionData, @Nonnull IContext context,
-															 @Nonnull IDataGrid dataGrid) throws Exception;
+	@Nullable protected abstract Object processRequestImpl(@Nonnull T actionData, @Nonnull IContext context,
+														   @Nonnull IDataGrid dataGrid) throws Exception;
 
 	@SuppressWarnings("unchecked")
 	@Nullable
 	@Override
-	public Serializable processAction(@Nonnull RequestEnvelope action, @Nonnull IDataGrid dataGrid) throws Exception {
+	public Serializable processRequest(@Nonnull RequestEnvelope action, @Nonnull IDataGrid dataGrid) throws Exception {
 		if(action.getRequest().getClass().isAssignableFrom(mDataClass)) {
 			// TODO translate data
-			return (Serializable) processActionForReal(
+			return (Serializable) processRequestImpl(
 					(T) action.getRequest(),
 					dataGrid.retrieveContext(action.getSessionData().getContextId(), false),
 					dataGrid

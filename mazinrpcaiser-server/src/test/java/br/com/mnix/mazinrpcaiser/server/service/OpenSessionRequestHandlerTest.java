@@ -25,9 +25,9 @@ public class OpenSessionRequestHandlerTest {
 		final RequestEnvelope action2 = new RequestEnvelope(topicId, session, data2);
 
 		dataGrid.raise();
-		final Serializable processed1 = handler.processAction(action1, dataGrid);
+		final Serializable processed1 = handler.processRequest(action1, dataGrid);
 		dataGrid.retrieveContext(contextId, false).putObject("key1", "bar");
-		final Serializable processed2 = handler.processAction(action2, dataGrid);
+		final Serializable processed2 = handler.processRequest(action2, dataGrid);
 
 		assertNull(processed1);
 		assertNull(processed2);

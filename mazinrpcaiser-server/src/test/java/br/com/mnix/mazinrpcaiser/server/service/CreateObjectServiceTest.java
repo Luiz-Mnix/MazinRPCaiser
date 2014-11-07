@@ -28,7 +28,7 @@ public class CreateObjectServiceTest {
 
 		// Act
 		datagrid.raise();
-		handler.processAction(action, datagrid);
+		handler.processRequest(action, datagrid);
 		datagrid.shutdown();
 	}
 
@@ -46,7 +46,7 @@ public class CreateObjectServiceTest {
 
 		// Act
 		datagrid.raise();
-		handler.processAction(action, datagrid);
+		handler.processRequest(action, datagrid);
 		datagrid.shutdown();
 	}
 
@@ -64,7 +64,7 @@ public class CreateObjectServiceTest {
 
 		// Act
 		datagrid.raise();
-		handler.processAction(action, datagrid);
+		handler.processRequest(action, datagrid);
 
 		// Assert
 		final IContext context = datagrid.retrieveContext(contextId, false);
@@ -88,7 +88,7 @@ public class CreateObjectServiceTest {
 
 		// Act
 		datagrid.raise();
-		handler.processAction(action, datagrid);
+		handler.processRequest(action, datagrid);
 
 		datagrid.shutdown();
 	}
@@ -107,7 +107,7 @@ public class CreateObjectServiceTest {
 
 		// Act
 		datagrid.raise();
-		handler.processAction(action, datagrid);
+		handler.processRequest(action, datagrid);
 		datagrid.shutdown();
 	}
 
@@ -125,7 +125,7 @@ public class CreateObjectServiceTest {
 
 		// Act
 		datagrid.raise();
-		handler.processAction(action, datagrid);
+		handler.processRequest(action, datagrid);
 		datagrid.shutdown();
 	}
 

@@ -35,7 +35,7 @@ public class SessionTest {
 		final Runnable openHandler = new Runnable() {
 			@Override
 			public void run() {
-				BlockingQueue queue = HazelcastUtils.getQueue(RequestUtils.getActionType(OpenSessionRequest.class));
+				BlockingQueue queue = HazelcastUtils.getQueue(RequestUtils.getRequestGroup(OpenSessionRequest.class));
 				try {
 					RequestEnvelope action = (RequestEnvelope) queue.take();
 					HazelcastUtils.postMessage(
@@ -50,7 +50,7 @@ public class SessionTest {
 		final Runnable closeHandler = new Runnable() {
 			@Override
 			public void run() {
-				BlockingQueue queue = HazelcastUtils.getQueue(RequestUtils.getActionType(CloseSessionRequest.class));
+				BlockingQueue queue = HazelcastUtils.getQueue(RequestUtils.getRequestGroup(CloseSessionRequest.class));
 				try {
 					RequestEnvelope action = (RequestEnvelope) queue.take();
 					HazelcastUtils.postMessage(

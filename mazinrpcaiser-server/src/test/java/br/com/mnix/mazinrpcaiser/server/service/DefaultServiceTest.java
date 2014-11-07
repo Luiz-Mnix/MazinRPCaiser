@@ -22,6 +22,6 @@ public class DefaultServiceTest {
 
 		//Act
 		datagrid.raise();
-		handler.processAction(action, datagrid);
+		handler.processRequest(action, datagrid);
 	}
 }
