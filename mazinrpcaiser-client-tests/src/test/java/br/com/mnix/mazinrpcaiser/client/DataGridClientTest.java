@@ -24,7 +24,7 @@ public class DataGridClientTest implements MessageListener {
 
 	@AfterClass
 	public static void Shutdown() {
-		HazelcastUtils.shutdowHazelcast();
+		HazelcastUtils.shutdownHazelcast();
 	}
 
 	@Test

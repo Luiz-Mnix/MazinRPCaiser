@@ -4,16 +4,16 @@ import br.com.mnix.mazinrpcaiser.common.OpenSessionData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.Serializable;
 
 /**
  * Created by mnix05 on 11/3/14.
  *
  * @author mnix05
  */
-public class OpenSessionHandler extends DefaultDataHandler<OpenSessionData> {
+@ActionHandler(to = OpenSessionData.class)
+public class OpenSessionDataHandler extends DefaultDataHandler<OpenSessionData> {
 
-	protected OpenSessionHandler() {
+	protected OpenSessionDataHandler() {
 		super(OpenSessionData.class);
 	}
 

@@ -13,7 +13,7 @@ import java.util.Set;
  * @author mnix05
  */
 public final class ServerApp {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		Set<Class<? extends IActionData>> expectedDataClasses
 				= new Reflections("br.com.mnix").getSubTypesOf(IActionData.class);
 

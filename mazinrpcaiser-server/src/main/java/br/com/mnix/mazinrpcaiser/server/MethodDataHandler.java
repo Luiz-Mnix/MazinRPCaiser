@@ -13,8 +13,9 @@ import java.lang.reflect.Method;
  *
  * @author mnix05
  */
-public class MethodHandler extends DefaultDataHandler<MethodData> {
-	public MethodHandler() {
+@ActionHandler(to = MethodData.class)
+public class MethodDataHandler extends DefaultDataHandler<MethodData> {
+	public MethodDataHandler() {
 		super(MethodData.class);
 	}
 

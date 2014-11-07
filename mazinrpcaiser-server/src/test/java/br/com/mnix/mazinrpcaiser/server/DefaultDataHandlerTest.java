@@ -3,16 +3,12 @@ package br.com.mnix.mazinrpcaiser.server;
 import br.com.mnix.mazinrpcaiser.common.*;
 import org.junit.Test;
 
-import java.io.Serializable;
-
-import static org.junit.Assert.*;
-
 public class DefaultDataHandlerTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testProcessAction_wrongData() throws Exception {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
-		final DefaultDataHandler handler = new OpenSessionHandler();
+		final DefaultDataHandler handler = new OpenSessionDataHandler();
 		final IActionData data = new CloseSessionData();
 		final String topicId = "topic";
 		final String contextId = "context1";

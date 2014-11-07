@@ -3,21 +3,18 @@ package br.com.mnix.mazinrpcaiser.server;
 import br.com.mnix.mazinrpcaiser.common.*;
 import br.com.mnix.mazinrpcaiser.common.exception.ServiceDoesNotExistException;
 import br.com.mnix.mazinrpcaiser.common.exception.ServiceHasNoDefaultImplementationException;
-import org.apache.commons.lang3.ClassUtils;
 import org.junit.Test;
-
-import javax.lang.model.type.PrimitiveType;
 
 import static org.junit.Assert.*;
 
 import java.io.Serializable;
 
-public class CreateObjectHandlerTest {
+public class CreateObjectDataHandlerTest {
 	@Test(expected = ServiceDoesNotExistException.class)
 	public void testProcessAction_BaselessService_ShouldThrowException() throws Exception {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
-		final CreateObjectHandler handler = new CreateObjectHandler();
+		final CreateObjectDataHandler handler = new CreateObjectDataHandler();
 		final String objectId = "obj";
 		final CreateObjectData data = new CreateObjectData(objectId, IFake.class, null);
 		final String topicId = "topic";
@@ -35,7 +32,7 @@ public class CreateObjectHandlerTest {
 	public void testProcessAction_NonDefaultImplementation_ShouldThrowException() throws Exception {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
-		final CreateObjectHandler handler = new CreateObjectHandler();
+		final CreateObjectDataHandler handler = new CreateObjectDataHandler();
 		final String objectId = "obj";
 		final CreateObjectData data = new CreateObjectData(objectId, IDistributedNonDefaultStub.class, null);
 		final String topicId = "topic";
@@ -53,7 +50,7 @@ public class CreateObjectHandlerTest {
 	public void testProcessAction_DefaultImplementation() throws Exception {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
-		final CreateObjectHandler handler = new CreateObjectHandler();
+		final CreateObjectDataHandler handler = new CreateObjectDataHandler();
 		final String objectId = "obj";
 		final CreateObjectData data = new CreateObjectData(objectId, IDistributedStub.class, null);
 		final String topicId = "topic";
@@ -77,7 +74,7 @@ public class CreateObjectHandlerTest {
 	public void testProcessAction_DefaultImplementationInvalidConstructor() throws Exception {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
-		final CreateObjectHandler handler = new CreateObjectHandler();
+		final CreateObjectDataHandler handler = new CreateObjectDataHandler();
 		final String objectId = "obj";
 		final CreateObjectData data = new CreateObjectData(objectId, IDistributedStub.class, new Serializable[] { "2" });
 		final String topicId = "topic";
@@ -96,7 +93,7 @@ public class CreateObjectHandlerTest {
 	public void testProcessAction_DefaultImplementationPrimitiveConstructor() throws Exception {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
-		final CreateObjectHandler handler = new CreateObjectHandler();
+		final CreateObjectDataHandler handler = new CreateObjectDataHandler();
 		final String objectId = "obj";
 		final CreateObjectData data = new CreateObjectData(objectId, IDistributedStub.class, new Serializable[] { true });
 		final String topicId = "topic";
@@ -114,7 +111,7 @@ public class CreateObjectHandlerTest {
 	public void testProcessAction_DefaultImplementationWrapperConstructor() throws Exception {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
-		final CreateObjectHandler handler = new CreateObjectHandler();
+		final CreateObjectDataHandler handler = new CreateObjectDataHandler();
 		final String objectId = "obj";
 		final CreateObjectData data = new CreateObjectData(objectId, IDistributedStub.class, new Serializable[] { 1 });
 		final String topicId = "topic";

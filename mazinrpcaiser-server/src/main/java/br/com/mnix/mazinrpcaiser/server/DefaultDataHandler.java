@@ -2,7 +2,6 @@ package br.com.mnix.mazinrpcaiser.server;
 
 import br.com.mnix.mazinrpcaiser.common.IActionData;
 import br.com.mnix.mazinrpcaiser.common.InputAction;
-import br.com.mnix.mazinrpcaiser.common.exception.ServiceHasNoDefaultImplementationException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -1,19 +1,18 @@
 package br.com.mnix.mazinrpcaiser.server;
 
 import br.com.mnix.mazinrpcaiser.common.CloseSessionData;
-import br.com.mnix.mazinrpcaiser.common.InputAction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.Serializable;
 
 /**
  * Created by mnix05 on 11/4/14.
  *
  * @author mnix05
  */
-public class CloseSessionHandler extends DefaultDataHandler<CloseSessionData> {
-	protected CloseSessionHandler() {
+@ActionHandler(to = CloseSessionData.class)
+public class CloseSessionDataHandler extends DefaultDataHandler<CloseSessionData> {
+	protected CloseSessionDataHandler() {
 		super(CloseSessionData.class);
 	}
 

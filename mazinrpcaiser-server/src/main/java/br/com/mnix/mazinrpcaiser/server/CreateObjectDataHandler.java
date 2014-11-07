@@ -1,8 +1,6 @@
 package br.com.mnix.mazinrpcaiser.server;
 
-import br.com.mnix.mazinrpcaiser.common.CreateObjectData;
-import br.com.mnix.mazinrpcaiser.common.DefaultImplementation;
-import br.com.mnix.mazinrpcaiser.common.DistributedVersion;
+import br.com.mnix.mazinrpcaiser.common.*;
 import br.com.mnix.mazinrpcaiser.common.exception.ServiceDoesNotExistException;
 import br.com.mnix.mazinrpcaiser.common.exception.ServiceHasNoDefaultImplementationException;
 import org.reflections.Reflections;
@@ -19,11 +17,13 @@ import java.util.Set;
  *
  * @author mnix05
  */
-public class CreateObjectHandler extends DefaultDataHandler<CreateObjectData> {
-	protected CreateObjectHandler() {
+@ActionHandler(to = CreateObjectData.class)
+public class CreateObjectDataHandler extends DefaultDataHandler<CreateObjectData> {
+	protected CreateObjectDataHandler() {
 		super(CreateObjectData.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Nullable
 	@Override
 	protected Object processActionForReal(@Nonnull CreateObjectData actionData, @Nonnull IContext context,
@@ -35,7 +35,8 @@ public class CreateObjectHandler extends DefaultDataHandler<CreateObjectData> {
 					DistributedVersion.class
 			);
 			Class backendClass = distributedVersion.of();
-			Set<Class<?>> implementationClasses = new Reflections("br.com").getSubTypesOf(backendClass);
+			Set<Class<?>> implementationClasses = new Reflections(MazinRPCaiserConstants.DEFAULT_USER_PACKAGE)
+					.getSubTypesOf(backendClass);
 
 			for(Class<?> implementationClass : implementationClasses) {
 				if(implementationClass.isAnnotationPresent(DefaultImplementation.class)) {

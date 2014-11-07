@@ -22,7 +22,7 @@ public class SessionTest {
 
 	@After
 	public void shutdown() {
-		HazelcastUtils.shutdowHazelcast();
+		HazelcastUtils.shutdownHazelcast();
 	}
 
 	@Test

@@ -33,7 +33,7 @@ public final class HazelcastUtils {
 		return null;
 	}
 
-	public static void shutdowHazelcast() {
+	public static void shutdownHazelcast() {
 //		if(sHazelcastConnection != null) {
 //			sHazelcastConnection.shutdown();
 //		}

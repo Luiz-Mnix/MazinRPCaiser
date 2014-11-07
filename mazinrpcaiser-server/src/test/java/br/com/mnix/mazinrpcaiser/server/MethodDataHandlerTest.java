@@ -8,13 +8,13 @@ import java.io.Serializable;
 
 import static org.junit.Assert.*;
 
-public class MethodHandlerTest {
+public class MethodDataHandlerTest {
 
 	@Test
 	public void testProcessAction_CorrectMethod() throws Exception {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
-		final MethodHandler handler = new MethodHandler();
+		final MethodDataHandler handler = new MethodDataHandler();
 		final String objectId = "obj";
 		final MethodData data = new MethodData(objectId, "foo", new Serializable[] { 1 });
 		final String topicId = "topic";
@@ -38,7 +38,7 @@ public class MethodHandlerTest {
 	public void testProcessAction_MethodException() throws Exception {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
-		final MethodHandler handler = new MethodHandler();
+		final MethodDataHandler handler = new MethodDataHandler();
 		final String objectId = "obj";
 		final MethodData data = new MethodData(objectId, "throwException", null);
 		final String topicId = "topic";
@@ -58,7 +58,7 @@ public class MethodHandlerTest {
 	public void testProcessAction_PrimitiveArgs() throws Exception {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
-		final MethodHandler handler = new MethodHandler();
+		final MethodDataHandler handler = new MethodDataHandler();
 		final String objectId = "obj";
 		final MethodData data = new MethodData(objectId, "primitiveArgMethod", new Serializable[] { 1 });
 		final String topicId = "topic";
@@ -77,7 +77,7 @@ public class MethodHandlerTest {
 	public void testProcessAction_WrapperArgs_PrimitiveReturn() throws Exception {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
-		final MethodHandler handler = new MethodHandler();
+		final MethodDataHandler handler = new MethodDataHandler();
 		final String objectId = "obj";
 		final float value = 1.f;
 		final MethodData data = new MethodData(objectId, "wrapperArgMethod", new Serializable[] { value });

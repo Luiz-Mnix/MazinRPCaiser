@@ -25,7 +25,7 @@ public class ServiceClientTest {
 
 	@After
 	public void shutdown() {
-		HazelcastUtils.shutdowHazelcast();
+		HazelcastUtils.shutdownHazelcast();
 	}
 
 	@Test
