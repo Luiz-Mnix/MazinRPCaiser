@@ -1,6 +1,9 @@
 package br.com.mnix.mazinrpcaiser.client;
 
 import br.com.mnix.mazinrpcaiser.common.*;
+import br.com.mnix.mazinrpcaiser.common.request.CloseSessionRequest;
+import br.com.mnix.mazinrpcaiser.common.request.OpenSessionRequest;
+import br.com.mnix.mazinrpcaiser.common.request.RequestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,12 +35,12 @@ public class SessionTest {
 		final Runnable openHandler = new Runnable() {
 			@Override
 			public void run() {
-				BlockingQueue queue = HazelcastUtils.getQueue(ActionDataUtils.getActionType(OpenSessionData.class));
+				BlockingQueue queue = HazelcastUtils.getQueue(RequestUtils.getActionType(OpenSessionRequest.class));
 				try {
-					InputAction action = (InputAction) queue.take();
+					RequestEnvelope action = (RequestEnvelope) queue.take();
 					HazelcastUtils.postMessage(
 							action.getTopicId(),
-							new OutputAction(action.getTopicId(), action.getSessionMetadata(), null, null)
+							new ResponseEnvelope(action.getTopicId(), action.getSessionData(), null, null)
 					);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -47,12 +50,12 @@ public class SessionTest {
 		final Runnable closeHandler = new Runnable() {
 			@Override
 			public void run() {
-				BlockingQueue queue = HazelcastUtils.getQueue(ActionDataUtils.getActionType(CloseSessionData.class));
+				BlockingQueue queue = HazelcastUtils.getQueue(RequestUtils.getActionType(CloseSessionRequest.class));
 				try {
-					InputAction action = (InputAction) queue.take();
+					RequestEnvelope action = (RequestEnvelope) queue.take();
 					HazelcastUtils.postMessage(
 							action.getTopicId(),
-							new OutputAction(action.getTopicId(), action.getSessionMetadata(), null, null)
+							new ResponseEnvelope(action.getTopicId(), action.getSessionData(), null, null)
 					);
 				} catch (InterruptedException e) {
 					e.printStackTrace();

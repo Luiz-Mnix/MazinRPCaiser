@@ -42,7 +42,7 @@ public class DataGridClientTest implements MessageListener {
 		assertFalse(client.isConnected());
 	}
 
-	@Test(expected = ClusterUnavailableException.class)
+	@Test(expected = DataGridUnavailableException.class)
 	public void testConnect_InvalidEndpoint_ShouldThrowException() throws Exception{
 		// Arrange
 		final String clusterAddress = "1272.0.0.1";
