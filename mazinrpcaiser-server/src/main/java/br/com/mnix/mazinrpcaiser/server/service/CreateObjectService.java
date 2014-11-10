@@ -22,7 +22,7 @@ import java.util.Set;
  */
 @Service(forRequest = CreateObjectRequest.class)
 public class CreateObjectService extends DefaultService<CreateObjectRequest> {
-	protected CreateObjectService() {
+	public CreateObjectService() {
 		super(CreateObjectRequest.class);
 	}
 

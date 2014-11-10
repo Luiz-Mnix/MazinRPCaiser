@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
  */
 @Service(forRequest = CloseSessionRequest.class)
 public class CloseSessionService extends DefaultService<CloseSessionRequest> {
-	protected CloseSessionService() {
+	public CloseSessionService() {
 		super(CloseSessionRequest.class);
 	}
 

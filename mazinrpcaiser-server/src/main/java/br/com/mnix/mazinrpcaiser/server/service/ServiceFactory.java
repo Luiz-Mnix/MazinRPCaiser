@@ -70,7 +70,7 @@ public final class ServiceFactory {
 
 	@Nullable
 	private static IService getServiceFromConvention(@Nonnull Class<? extends Serializable> requestClass) {
-		String requestName = requestClass.getName();
+		String requestName = requestClass.getSimpleName();
 		int requestSuffixPosition = requestName.lastIndexOf(DEFAULT_REQUEST_SUFFIX);
 		String serviceName =
 				(requestSuffixPosition >= 0 ? requestName.substring(0, requestSuffixPosition) : requestName)

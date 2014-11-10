@@ -20,9 +20,11 @@ public interface IServiceClient {
 	@Nullable Serializable makeRequest(@Nonnull Serializable actionData, @Nonnull SessionData session)
 			throws ServerExecutionException, InterruptedException;
 
-	@Nullable <T extends Serializable> T makeRequest(@Nonnull IReturn<T> actionData, @Nonnull SessionData session,
-													 int timeout)
-			throws ServerExecutionException, InterruptedException;
+// --Commented out by Inspection START (11/10/14, 3:44 PM):
+//	@Nullable <T extends Serializable> T makeRequest(@Nonnull IReturn<T> actionData, @Nonnull SessionData session,
+//													 int timeout)
+//			throws ServerExecutionException, InterruptedException;
+// --Commented out by Inspection STOP (11/10/14, 3:44 PM)
 
 	@Nullable <T extends Serializable> T makeRequest(@Nonnull IReturn<T> actionData, @Nonnull SessionData session)
 			throws ServerExecutionException, InterruptedException;

@@ -119,7 +119,7 @@ public class MethodServiceTest {
 
 		@Override
 		public void throwException() throws NotImplementedException {
-			throw new NotImplementedException("FOOCK");
+			throw new NotImplementedException("test");
 		}
 
 		@Override

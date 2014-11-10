@@ -13,7 +13,7 @@ import java.io.Serializable;
 public interface IContext {
 	@Nonnull String getId();
 	void putObject(@Nonnull String objectId, @Nonnull Serializable object);
-	@Nonnull <T extends Serializable> T getObject(@Nonnull String objectId) throws ObjectNotFoundException;
+	// --Commented out by Inspection (11/10/14, 3:44 PM):@Nonnull <T extends Serializable> T getObject(@Nonnull String objectId) throws ObjectNotFoundException;
 	@Nonnull Serializable getSerializable(@Nonnull String objectId) throws ObjectNotFoundException;
 	boolean containsObject(@Nonnull String objectId);
 	int size();

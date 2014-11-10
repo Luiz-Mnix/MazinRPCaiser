@@ -15,6 +15,6 @@ public final class RequestUtils {
 	}
 
 	public static String getRequestGroup(Class<? extends Serializable> actionDataClass) {
-		return actionDataClass.getCanonicalName();
+		return actionDataClass.getCanonicalName() + "_receiver";
 	}
 }

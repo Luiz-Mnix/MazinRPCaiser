@@ -32,12 +32,14 @@ public class MapContext implements IContext {
 		mInnerMap.put(objectId, object);
 	}
 
-	@Nonnull
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T extends Serializable> T getObject(@Nonnull String objectId) throws ObjectNotFoundException {
-		return (T) getSerializable(objectId);
-	}
+// --Commented out by Inspection START (11/10/14, 3:44 PM):
+//	@Nonnull
+//	@SuppressWarnings("unchecked")
+//	@Override
+//	public <T extends Serializable> T getObject(@Nonnull String objectId) throws ObjectNotFoundException {
+//		return (T) getSerializable(objectId);
+//	}
+// --Commented out by Inspection STOP (11/10/14, 3:44 PM)
 
 	@Nonnull
 	@Override

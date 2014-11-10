@@ -14,7 +14,6 @@ import javax.annotation.Nullable;
  */
 @Service(forRequest = OpenSessionRequest.class)
 public class OpenSessionService extends DefaultService<OpenSessionRequest> {
-
 	public OpenSessionService() {
 		super(OpenSessionRequest.class);
 	}
