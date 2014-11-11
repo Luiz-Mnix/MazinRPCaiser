@@ -68,7 +68,7 @@ public class CreateObjectServiceTest {
 
 		// Assert
 		final IContext context = datagrid.retrieveContext(contextId, false);
-		assertTrue(context.containsObject(objectId));
+		assertTrue(context.containsObjectId(objectId));
 		assertEquals(DefaultStubStub.class, context.getSerializable(objectId).getClass());
 
 		datagrid.shutdown();

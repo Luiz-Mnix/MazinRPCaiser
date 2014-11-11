@@ -54,8 +54,25 @@ public class MapContext implements IContext {
 	}
 
 	@Override
-	public boolean containsObject(@Nonnull String objectId) {
+	public boolean containsObjectId(@Nonnull String objectId) {
 		return mInnerMap.containsKey(objectId);
+	}
+
+	@Nonnull
+	@Override
+	public String getObjectId(@Nonnull Serializable object) throws ObjectNotFoundException {
+		for (Map.Entry<String, Serializable> entry : mInnerMap.entrySet()) {
+			if(object.equals(entry)) {
+				return entry.getKey();
+			}
+		}
+
+		throw new ObjectNotFoundException();
+	}
+
+	@Override
+	public boolean containsObject(@Nonnull Serializable object) {
+		return mInnerMap.containsValue(object);
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package br.com.mnix.mazinrpcaiser.server.service;
 
 import br.com.mnix.mazinrpcaiser.common.RequestEnvelope;
+import br.com.mnix.mazinrpcaiser.server.translation.DataTranslator;
 import br.com.mnix.mazinrpcaiser.server.data.IContext;
 import br.com.mnix.mazinrpcaiser.server.data.IDataGrid;
 
@@ -20,20 +21,22 @@ public abstract class DefaultService<T extends Serializable> implements IService
 		mDataClass = dataClass;
 	}
 
-	@Nullable protected abstract Object processRequestImpl(@Nonnull T actionData, @Nonnull IContext context,
-														   @Nonnull IDataGrid dataGrid) throws Exception;
+	@Nullable protected abstract Serializable processRequestImpl(@Nonnull T actionData, @Nonnull IContext context,
+																 @Nonnull IDataGrid dataGrid) throws Exception;
 
 	@SuppressWarnings("unchecked")
 	@Nullable
 	@Override
 	public Serializable processRequest(@Nonnull RequestEnvelope action, @Nonnull IDataGrid dataGrid) throws Exception {
 		if(action.getRequest().getClass().isAssignableFrom(mDataClass)) {
-			// TODO translate data
-			return (Serializable) processRequestImpl(
+			IContext context = dataGrid.retrieveContext(action.getSessionData().getContextId(), false);
+			Serializable processedData = processRequestImpl(
 					(T) action.getRequest(),
-					dataGrid.retrieveContext(action.getSessionData().getContextId(), false),
+					context,
 					dataGrid
 			);
+
+			return DataTranslator.translateData(processedData, context);
 		}
 
 		throw new IllegalArgumentException(

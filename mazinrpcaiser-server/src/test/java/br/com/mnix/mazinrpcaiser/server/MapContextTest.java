@@ -23,7 +23,7 @@ public class MapContextTest {
 		context.putObject("key3", 666);
 
 		// Assert
-		assertTrue(context.containsObject("key1"));
+		assertTrue(context.containsObjectId("key1"));
 		assertTrue(innerMap.containsKey("key3"));
 		assertEquals(innerMap.get("key2"), context.getSerializable("key2"));
 		assertEquals(innerMap.size(), context.size());

@@ -23,14 +23,14 @@ public class MethodService extends DefaultService<MethodRequest> {
 
 	@Nullable
 	@Override
-	protected Object processRequestImpl(@Nonnull MethodRequest actionData, @Nonnull IContext context,
-										@Nonnull IDataGrid dataGrid) throws Exception {
+	protected Serializable processRequestImpl(@Nonnull MethodRequest actionData, @Nonnull IContext context,
+											  @Nonnull IDataGrid dataGrid) throws Exception {
 		Class<?>[] argsClasses = ObjectUtils.getTypesOfObjects(actionData.getArgs());
 		Serializable obj = context.getSerializable(actionData.getObjectId());
 		Method method = obj.getClass().getMethod(actionData.getMethodName(), argsClasses);
 
 		try {
-			return method.invoke(obj, (Object[]) actionData.getArgs());
+			return (Serializable) method.invoke(obj, (Object[]) actionData.getArgs());
 		} catch (InvocationTargetException e) {
 			throw (Exception) e.getCause();
 		}

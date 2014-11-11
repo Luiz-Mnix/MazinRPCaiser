@@ -66,7 +66,6 @@ public class ServiceClient implements IServiceClient, MessageListener {
 		return makeRequest(actionData, session, DEFAULT_TIMEOUT);
 	}
 
-	@Override
 	@SuppressWarnings("unchecked")
 	@Nullable
 	public <T extends Serializable> T makeRequest(@Nonnull IReturn<T> actionData, @Nonnull SessionData session, int timeout)
