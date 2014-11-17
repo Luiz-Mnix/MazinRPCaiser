@@ -19,9 +19,14 @@ public class CollectionTranslator implements ITranslator {
 			Collection collection = (Collection) data;
 
 			Collection fixedCollection;
-			fixedCollection = collection.getClass().getConstructor().newInstance();
+			try {
+				fixedCollection = collection.getClass().getConstructor().newInstance();
+			} catch(NoSuchMethodException ignored) {
+				fixedCollection = collection.getClass().getConstructor(Integer.TYPE).newInstance(collection.size());
+			}
 
 			for (Object obj : collection) {
+				//noinspection unchecked
 				fixedCollection.add(DataTranslator.translateData((Serializable) obj, context));
 			}
 

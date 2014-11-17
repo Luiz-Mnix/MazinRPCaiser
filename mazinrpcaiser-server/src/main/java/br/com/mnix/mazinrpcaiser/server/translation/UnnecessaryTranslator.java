@@ -9,7 +9,7 @@ import java.io.Serializable;
  *
  * @author mnix05
  */
-@Translator(of = {Number.class, Character.class, String.class, Class.class})
+@Translator(of = {Number.class, Character.class, String.class, Class.class, Exception.class})
 public class UnnecessaryTranslator implements ITranslator {
 	@Override
 	public Serializable translate(Serializable data, IContext context) {

@@ -56,20 +56,20 @@ public final class DataTranslator {
 				data : findTranslator(data.getClass()).translate(data, context);
 	}
 
-	@Nonnull private static ITranslator findTranslator(Class<? extends Serializable> forClass)
-			throws TranslationException {
-		if(sTranslators.containsKey(forClass)) {
-			return sTranslators.get(forClass);
-		}
+	@Nonnull private static ITranslator findTranslator(Class<? extends Serializable> forClass) {
+		for(Class<?> translatedClass = forClass;
+			!translatedClass.equals(Object.class);
+			translatedClass = translatedClass.getSuperclass()) {
 
-		for (Class<?> interfaceClass : forClass.getInterfaces()) {
-			if(sTranslators.containsKey(interfaceClass)) {
-				return sTranslators.get(interfaceClass);
+			if(sTranslators.containsKey(translatedClass)) {
+				return sTranslators.get(translatedClass);
 			}
-		}
 
-		if(Serializable.class.isAssignableFrom(forClass.getSuperclass())) {
-			return findTranslator((Class<? extends Serializable>) forClass.getSuperclass());
+			for (Class<?> interfaceClass : translatedClass.getInterfaces()) {
+				if(sTranslators.containsKey(interfaceClass)) {
+					return sTranslators.get(interfaceClass);
+				}
+			}
 		}
 
 		return FALLBACK_TRANSLATOR;

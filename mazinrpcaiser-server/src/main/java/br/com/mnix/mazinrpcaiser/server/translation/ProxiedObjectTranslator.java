@@ -1,7 +1,9 @@
 package br.com.mnix.mazinrpcaiser.server.translation;
 
 import br.com.mnix.mazinrpcaiser.common.NotTransmissibleObject;
+import br.com.mnix.mazinrpcaiser.common.exception.ObjectNotFoundException;
 import br.com.mnix.mazinrpcaiser.server.data.IContext;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -17,7 +19,11 @@ public class ProxiedObjectTranslator implements ITranslator {
 		String objectId;
 
 		if(context.containsObject(data)) {
-			objectId = context.getObjectId(data);
+			try {
+				objectId = context.getObjectId(data);
+			} catch (ObjectNotFoundException ignored) {
+				objectId = StringUtils.EMPTY; // Unreachable code, but it's here to hide IntelliJ warnings.
+			}
 		} else {
 			objectId = UUID.randomUUID().toString();
 			context.putObject(objectId, data);

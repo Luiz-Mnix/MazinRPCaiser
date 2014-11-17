@@ -25,6 +25,7 @@ public class MapTranslator implements ITranslator {
 				Map.Entry entry = (Map.Entry) entryObj;
 				Object fixedKey = DataTranslator.translateData((Serializable) entry.getKey(), context);
 				Object fixedValue = DataTranslator.translateData((Serializable) entry.getValue(), context);
+				//noinspection unchecked
 				fixedMap.put(fixedKey, fixedValue);
 			}
 
