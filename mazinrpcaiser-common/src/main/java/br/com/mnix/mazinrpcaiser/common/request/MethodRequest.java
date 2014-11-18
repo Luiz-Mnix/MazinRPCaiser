@@ -24,7 +24,7 @@ public class MethodRequest extends DefaultObjectRequest implements IReturn<Seria
 		return mParameters == null ? null : Arrays.copyOf(mParameters, mParameters.length);
 	}
 
-	public MethodRequest(@Nonnull String objectId, @Nonnull String methodName, @Nullable Serializable[] parameters) {
+	public MethodRequest(@Nonnull String objectId, @Nonnull String methodName, @Nullable Serializable... parameters) {
 		super(objectId);
 		mMethodName = methodName;
 		mParameters = parameters == null ? null : Arrays.copyOf(parameters, parameters.length);

@@ -1,9 +1,6 @@
 package br.com.mnix.mazinrpcaiser.server.data;
 
-import br.com.mnix.mazinrpcaiser.server.data.DataGridFactory;
-import br.com.mnix.mazinrpcaiser.server.data.IContext;
-import br.com.mnix.mazinrpcaiser.server.data.IDataGrid;
-import br.com.mnix.mazinrpcaiser.server.data.MapContext;
+import br.com.mnix.mazinrpcaiser.common.exception.ObjectNotFoundException;
 import org.junit.Test;
 
 import javax.annotation.Nonnull;
@@ -34,7 +31,6 @@ public class MapContextTest {
 		assertEquals(innerMap.size(), context.size());
 	}
 
-
 	@Test
 	public void test_SimpleContext_NotOverriddenEquals() throws Exception {
 		// Arrange
@@ -49,8 +45,24 @@ public class MapContextTest {
 
 		// Assert
 		assertTrue(context.containsObjectId(id));
+		assertEquals(id, context.getObjectId(stub1));
+		try {
+			context.getObjectId(stub2);
+			throw new Exception("Object which was not supposed to be found was found");
+		} catch (ObjectNotFoundException ignored) {}
 		assertFalse(context.containsObject(stub2));
 		assertSame(stub1, context.getSerializable(id));
+	}
+
+	@Test(expected = ObjectNotFoundException.class)
+	public void test_SimpleContext_GetObjectById() throws Exception {
+		// Arrange
+		final Map<String, Serializable> contextMap = new HashMap<>();
+		final String id = "foo";
+		final IContext context = new MapContext(id, contextMap);
+
+		// Act & Assert
+		context.getSerializable(id);
 	}
 
 	@Test
@@ -68,6 +80,14 @@ public class MapContextTest {
 
 		// Assert
 		assertTrue(context.containsObjectId(id));
+		try {
+			context.getObjectId(stub1);
+			throw new Exception("Object which was not supposed to be found was found");
+		} catch(ObjectNotFoundException ignored) {}
+		try {
+			context.getObjectId(stub2);
+			throw new Exception("Object which was not supposed to be found was found");
+		} catch(ObjectNotFoundException ignored) {}
 		assertTrue(context.containsObject(stub2));
 		assertNotEquals(stub1, context.getSerializable(id));
 
@@ -88,6 +108,8 @@ public class MapContextTest {
 
 		// Assert
 		assertTrue(context.containsObjectId(id));
+		assertEquals(id, context.getObjectId(stub1));
+		assertEquals(id, context.getObjectId(stub2));
 		assertTrue(context.containsObject(stub2));
 		assertSame(stub1, context.getSerializable(id));
 	}
@@ -107,6 +129,8 @@ public class MapContextTest {
 
 		// Assert
 		assertTrue(context.containsObjectId(id));
+		assertEquals(id, context.getObjectId(stub1));
+		assertEquals(id, context.getObjectId(stub2));
 		assertTrue(context.containsObject(stub2));
 		assertEquals(stub1, context.getSerializable(id));
 

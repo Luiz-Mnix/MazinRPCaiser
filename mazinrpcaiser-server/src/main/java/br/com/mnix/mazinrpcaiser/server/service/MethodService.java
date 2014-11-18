@@ -27,7 +27,7 @@ public class MethodService extends DefaultService<MethodRequest> {
 											  @Nonnull IDataGrid dataGrid) throws Exception {
 		Class<?>[] argsClasses = ObjectUtils.getTypesOfObjects(actionData.getArgs());
 		Serializable obj = context.getSerializable(actionData.getObjectId());
-		Method method = obj.getClass().getMethod(actionData.getMethodName(), argsClasses);
+		Method method = obj.getClass().getDeclaredMethod(actionData.getMethodName(), argsClasses);
 
 		try {
 			return (Serializable) method.invoke(obj, (Object[]) actionData.getArgs());

@@ -122,4 +122,13 @@ public class DataGridTest {
 
 		dataGrid.shutdown();
 	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testCheckIfIsOn() throws Exception {
+		// Arrange
+		final IDataGrid dataGrid = new DataGrid();
+
+		// Act & Assert
+		dataGrid.retrieveContext("foo", false);
+	}
 }

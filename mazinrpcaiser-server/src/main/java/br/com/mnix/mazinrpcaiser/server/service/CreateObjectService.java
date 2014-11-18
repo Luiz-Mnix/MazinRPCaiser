@@ -42,16 +42,18 @@ public class CreateObjectService extends DefaultService<CreateObjectRequest> {
 					.getSubTypesOf(backendClass);
 
 			for(Class<?> implementationClass : implementationClasses) {
-				if(implementationClass.isAnnotationPresent(DefaultImplementation.class)) {
+				if(implementationClass.isAnnotationPresent(DefaultImplementation.class)
+						&& Serializable.class.isAssignableFrom(implementationClass)) {
+
 					Class<?>[] argsClasses = ObjectUtils.getTypesOfObjects(actionData.getInitializationArgs());
 					Constructor constructor = implementationClass.getConstructor(argsClasses);
-					Object obj;
+					Serializable obj;
 					try {
-						obj = constructor.newInstance((Object[]) actionData.getInitializationArgs());
+						obj = (Serializable) constructor.newInstance((Object[]) actionData.getInitializationArgs());
 					} catch (InvocationTargetException e) {
 						throw (Exception) e.getCause();
 					}
-					context.putObject(actionData.getObjectId(), (Serializable) obj);
+					context.putObject(actionData.getObjectId(), obj);
 					return null;
 				}
 			}

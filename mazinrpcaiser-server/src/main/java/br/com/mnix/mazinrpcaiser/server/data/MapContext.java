@@ -62,7 +62,7 @@ public class MapContext implements IContext {
 	@Override
 	public String getObjectId(@Nonnull Serializable object) throws ObjectNotFoundException {
 		for (Map.Entry<String, Serializable> entry : mInnerMap.entrySet()) {
-			if(object.equals(entry)) {
+			if(object.equals(entry.getValue())) {
 				return entry.getKey();
 			}
 		}

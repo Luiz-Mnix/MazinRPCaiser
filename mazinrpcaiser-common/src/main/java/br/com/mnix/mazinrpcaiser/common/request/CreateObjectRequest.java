@@ -15,7 +15,7 @@ public class CreateObjectRequest extends DefaultObjectRequest implements IReturn
 	private static final long serialVersionUID = -8998716644568493004L;
 
 	public CreateObjectRequest(@Nonnull String objectId, @Nonnull Class serviceClass,
-							   @Nullable Serializable[] initializationArgs) {
+							   @Nullable Serializable... initializationArgs) {
 		super(objectId);
 		mServiceClass = serviceClass;
 		mInitializationArgs = initializationArgs != null ?

@@ -10,6 +10,8 @@ import br.com.mnix.mazinrpcaiser.server.data.IDataGrid;
 import br.com.mnix.mazinrpcaiser.server.service.RequestHasNoServiceException;
 import br.com.mnix.mazinrpcaiser.server.service.IService;
 import br.com.mnix.mazinrpcaiser.server.service.ServiceFactory;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.HazelcastInstanceNotActiveException;
 import org.reflections.Reflections;
 
 import javax.annotation.Nonnull;
@@ -55,6 +57,8 @@ public class TaskReceiver implements Runnable {
 				requestEnvelope = commands.take();
 			} catch (InterruptedException ignored) {
 				continue;
+			} catch (HazelcastInstanceNotActiveException ignored) {
+				break;
 			}
 
 			Serializable response = null;
@@ -72,7 +76,12 @@ public class TaskReceiver implements Runnable {
 					response,
 					exception
 			);
-			mDataGrid.postNotification(requestEnvelope.getTopicId(), output);
+
+			try {
+				mDataGrid.postNotification(requestEnvelope.getTopicId(), output);
+			} catch (IllegalStateException ignored) {
+				break;
+			}
 		}
 
 		sRunningReceivers.remove(mRequestClass);

@@ -16,9 +16,6 @@ import java.lang.reflect.InvocationTargetException;
 public final class ServiceFactory {
 	private ServiceFactory() {}
 
-	@Nonnull private static final String DEFAULT_SERVICE_SUFFIX = "Service";
-	@Nonnull private static final String DEFAULT_REQUEST_SUFFIX = "Request";
-
 	@SuppressWarnings("unchecked")
 	@Nonnull public static IService getServiceForRequest(@Nonnull Class<? extends Serializable> requestClass)
 			throws RequestHasNoServiceException {
@@ -26,9 +23,6 @@ public final class ServiceFactory {
 		IService service;
 
 		if((service = getServiceFromAnnotations(requestClass)) != null) {
-			return service;
-
-		} else if ((service = getServiceFromConvention(requestClass)) != null) {
 			return service;
 
 		} else {
@@ -64,25 +58,6 @@ public final class ServiceFactory {
 				}
 			}
 		}
-
-		return null;
-	}
-
-	@Nullable
-	private static IService getServiceFromConvention(@Nonnull Class<? extends Serializable> requestClass) {
-		String requestName = requestClass.getSimpleName();
-		int requestSuffixPosition = requestName.lastIndexOf(DEFAULT_REQUEST_SUFFIX);
-		String serviceName =
-				(requestSuffixPosition >= 0 ? requestName.substring(0, requestSuffixPosition) : requestName)
-						+ DEFAULT_SERVICE_SUFFIX;
-
-		try {
-			Class<?> serviceClass = Class.forName(serviceName);
-			if(IService.class.isAssignableFrom(serviceClass)) {
-				return (IService) serviceClass.getConstructor().newInstance();
-			}
-		} catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException
-				| InvocationTargetException ignored) {}
 
 		return null;
 	}

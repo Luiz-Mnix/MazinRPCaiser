@@ -19,16 +19,20 @@ public final class Session {
 		return mSessionData;
 	}
 
-	@Nonnull private final IDataGridClient mDataGrid;
+	@Nonnull private final IDataGridClient mDataGridClient;
+	@Nonnull public IDataGridClient getDataGridClient() {
+		return mDataGridClient;
+	}
+
 	@Nullable private IServiceClient mServiceClient = null;
 
 	public boolean isOpened() {
-		return mDataGrid.isConnected() && mServiceClient != null;
+		return mDataGridClient.isConnected() && mServiceClient != null;
 	}
 
 	public Session(@Nonnull String contextId, @Nonnull String serverAddress) {
 		mSessionData = new SessionData(contextId, serverAddress);
-		mDataGrid = DataGridClientFactory.createDataGrid(serverAddress);
+		mDataGridClient = DataGridClientFactory.createDataGrid(serverAddress);
 	}
 
 	public Session(@Nonnull String serverAddress) {
@@ -38,8 +42,8 @@ public final class Session {
 	public void open(boolean overwritesExisting)
 			throws DataGridUnavailableException, ServerExecutionException, InterruptedException {
 		if(!isOpened()) {
-			mDataGrid.connect();
-			mServiceClient = new ServiceClient(mDataGrid);
+			mDataGridClient.connect();
+			mServiceClient = new ServiceClient(mDataGridClient);
 			mServiceClient.makeRequest(new OpenSessionRequest(overwritesExisting), getSessionData());
 		}
 	}
@@ -49,7 +53,7 @@ public final class Session {
 		if(isOpened()) {
 			mServiceClient.makeRequest(new CloseSessionRequest(), getSessionData());
 			mServiceClient = null;
-			mDataGrid.disconnect();
+			mDataGridClient.disconnect();
 		}
 	}
 }

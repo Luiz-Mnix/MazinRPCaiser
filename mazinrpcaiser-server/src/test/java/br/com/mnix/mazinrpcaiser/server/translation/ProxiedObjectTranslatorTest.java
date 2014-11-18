@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class ProxiedObjectTranslatorTest {
 	@Test
@@ -27,11 +28,14 @@ public class ProxiedObjectTranslatorTest {
 		grid.raise();
 		final IContext context = grid.retrieveContext(id, false);
 		final NotTransmissibleObject proxy = (NotTransmissibleObject) translator.translate(stub1, context);
+		final NotTransmissibleObject proxy2 = (NotTransmissibleObject) translator.translate(stub1, context);
 
 		// Assert
+		assertEquals(1, context.size());
 		assertTrue(context.containsObjectId(proxy.getObjectId()));
 		assertEquals(stub1, context.getSerializable(proxy.getObjectId()));
 		assertEquals(stub1.getClass(), proxy.getObjectClass());
+		assertEquals(proxy.getObjectId(), proxy2.getObjectId());
 
 		grid.shutdown();
 	}
@@ -47,11 +51,14 @@ public class ProxiedObjectTranslatorTest {
 
 		// Act
 		final NotTransmissibleObject proxy = (NotTransmissibleObject) translator.translate(stub1, context);
+		final NotTransmissibleObject proxy2 = (NotTransmissibleObject) translator.translate(stub1, context);
 
 		// Assert
+		assertEquals(1, context.size());
 		assertTrue(context.containsObjectId(proxy.getObjectId()));
 		assertSame(stub1, context.getSerializable(proxy.getObjectId()));
 		assertEquals(stub1.getClass(), proxy.getObjectClass());
+		assertEquals(proxy.getObjectId(), proxy2.getObjectId());
 	}
 
 	public static class StubEquals implements Serializable {

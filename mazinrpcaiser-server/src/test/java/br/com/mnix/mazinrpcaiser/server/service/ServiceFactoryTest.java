@@ -22,15 +22,6 @@ public class ServiceFactoryTest {
 	}
 
 	@Test
-	public void testHandlerForActionDataType_UnannotatedHandler() throws Exception {
-		// Arrange & Act
-		final IService handler = ServiceFactory.getServiceForRequest(UnannotatedRequest.class);
-
-		// Assert
-		assertEquals(UnannotatedService.class, handler.getClass());
-	}
-
-	@Test
 	public void testHandlerForActionDataType_ProblematicHandlerAndSuperclass() throws Exception {
 		// Arrange & Act
 		final IService handler = ServiceFactory.getServiceForRequest(ProblematicRequest.class);
@@ -59,19 +50,6 @@ public class ServiceFactoryTest {
 		}
 	}
 
-	// UNANNOTATED HANDLER
-
-	public static class UnannotatedRequest implements Serializable {
-		private static final long serialVersionUID = -8894242395974266868L;
-	}
-	public static class UnannotatedService implements IService {
-		@Nullable
-		@Override
-		public Serializable processRequest(@Nonnull RequestEnvelope action, @Nonnull IDataGrid dataGrid) throws Exception {
-			return null;
-		}
-	}
-
 	// PROBLEMATIC ANNOTATED
 
 	public abstract static class AbstractProblematicRequest implements Serializable{
@@ -91,6 +69,7 @@ public class ServiceFactoryTest {
 			throw new Exception();
 		}
 	}
+	@Service(forRequest = AbstractProblematicRequest.class)
 	public static class AbstractProblematicService implements IService {
 		@Nullable
 		@Override
