@@ -2,6 +2,7 @@ package br.com.mnix.mazinrpcaiser.server.translation;
 
 import br.com.mnix.mazinrpcaiser.server.data.IContext;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
@@ -13,8 +14,9 @@ import java.util.Map;
  */
 @Translator(of = Map.class)
 public class MapTranslator implements ITranslator {
+	@Nonnull
 	@Override
-	public Serializable translate(Serializable data, IContext context) throws TranslationException {
+	public Serializable translate(@Nonnull Serializable data, @Nonnull IContext context) throws TranslationException {
 		try {
 			Map map = (Map) data;
 

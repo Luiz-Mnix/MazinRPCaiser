@@ -22,6 +22,7 @@ public final class DataTranslator {
 	private DataTranslator() {}
 
 	@Nonnull private static final ITranslator FALLBACK_TRANSLATOR = new ProxiedObjectTranslator();
+	@Nonnull private static final ITranslator DEFAULT_ARRAY_TRANSLATOR = new ArrayTranslator();
 
 	@Nonnull private static final Map<Class<?>, ITranslator> sTranslators = new HashMap<>();
 	static {
@@ -70,6 +71,10 @@ public final class DataTranslator {
 					return sTranslators.get(interfaceClass);
 				}
 			}
+		}
+
+		if(forClass.isArray()) {
+			return DEFAULT_ARRAY_TRANSLATOR;
 		}
 
 		return FALLBACK_TRANSLATOR;

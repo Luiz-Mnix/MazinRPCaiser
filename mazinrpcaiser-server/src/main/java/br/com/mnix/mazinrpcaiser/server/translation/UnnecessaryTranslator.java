@@ -2,6 +2,7 @@ package br.com.mnix.mazinrpcaiser.server.translation;
 
 import br.com.mnix.mazinrpcaiser.server.data.IContext;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 
 /**
@@ -11,8 +12,9 @@ import java.io.Serializable;
  */
 @Translator(of = {Number.class, Character.class, String.class, Class.class, Exception.class})
 public class UnnecessaryTranslator implements ITranslator {
+	@Nonnull
 	@Override
-	public Serializable translate(Serializable data, IContext context) {
+	public Serializable translate(@Nonnull Serializable data, @Nonnull IContext context) {
 		return data;
 	}
 }

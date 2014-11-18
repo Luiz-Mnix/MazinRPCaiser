@@ -2,6 +2,7 @@ package br.com.mnix.mazinrpcaiser.server.translation;
 
 import br.com.mnix.mazinrpcaiser.server.data.IContext;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 
 /**
@@ -10,5 +11,6 @@ import java.io.Serializable;
  * @author mnix05
  */
 public interface ITranslator {
-	Serializable translate(Serializable data, IContext context) throws TranslationException;
+	@Nonnull Serializable translate(@Nonnull Serializable data, @Nonnull IContext context)
+			throws TranslationException;
 }

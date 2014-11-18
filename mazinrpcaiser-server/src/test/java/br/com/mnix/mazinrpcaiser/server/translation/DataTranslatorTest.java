@@ -10,10 +10,7 @@ import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -115,7 +112,39 @@ public class DataTranslatorTest {
 		// Assert
 		assert translated != null;
 		assertEquals(map.getClass(), translated.getClass());
-		assertEquals(map.size(), ((Map)translated).size());
+		assertEquals(map.size(), ((Map) translated).size());
+	}
+
+	@Test
+	public void testTranslateData_CustomArrayTranslator() throws Exception {
+		// Arrange
+		final Map<String, Serializable> contextMap = new HashMap<>();
+		final String id = "foo";
+		final IContext context = new MapContext(id, contextMap);
+		final ArrayStub[] array = { new ArrayStub() };
+
+		// Act
+		final Serializable translated = DataTranslator.translateData(array, context);
+
+		// Assert
+		assertEquals(Arrays.hashCode(array), translated);
+	}
+
+	@Test
+	public void testTranslateData_PrimitiveType() throws Exception {
+		// Arrange
+		final Map<String, Serializable> contextMap = new HashMap<>();
+		final String id = "foo";
+		final IContext context = new MapContext(id, contextMap);
+		final int data = 2;
+
+		// Act
+		final Serializable translated = DataTranslator.translateData(data, context);
+
+		// Assert
+		assert translated != null;
+		assertEquals(Integer.class, translated.getClass());
+		assertEquals(data, translated);
 	}
 
 	@Test
@@ -180,9 +209,25 @@ public class DataTranslatorTest {
 
 	@Translator(of = TranslatedStub.class)
 	public static class TranslatedStubTranslator implements ITranslator {
+		@Nonnull
 		@Override
-		public Serializable translate(Serializable data, IContext context) throws TranslationException {
+		public Serializable translate(@Nonnull Serializable data, @Nonnull IContext context)
+				throws TranslationException {
 			return ((TranslatedStub)data).getFoo();
+		}
+	}
+
+	@Transmissible
+	public static class ArrayStub implements Serializable {
+		private static final long serialVersionUID = -6106798904369945521L;
+	}
+	@Translator(of = ArrayStub[].class)
+	public static class ArrayStubTranslator implements ITranslator {
+		@Nonnull
+		@Override
+		public Serializable translate(@Nonnull Serializable data, @Nonnull IContext context)
+				throws TranslationException {
+			return Arrays.hashCode((Object[]) data);
 		}
 	}
 }

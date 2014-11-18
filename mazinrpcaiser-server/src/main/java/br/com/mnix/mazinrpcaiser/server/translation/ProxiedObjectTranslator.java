@@ -5,6 +5,7 @@ import br.com.mnix.mazinrpcaiser.common.exception.ObjectNotFoundException;
 import br.com.mnix.mazinrpcaiser.server.data.IContext;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -14,8 +15,9 @@ import java.util.UUID;
  * @author mnix05
  */
 public class ProxiedObjectTranslator implements ITranslator {
+	@Nonnull
 	@Override
-	public Serializable translate(Serializable data, IContext context) throws TranslationException {
+	public Serializable translate(@Nonnull Serializable data, @Nonnull IContext context) throws TranslationException {
 		String objectId;
 
 		if(context.containsObject(data)) {
