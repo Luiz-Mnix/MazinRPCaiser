@@ -6,6 +6,7 @@ import br.com.mnix.mazinrpcaiser.server.data.IDataGrid;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.Serializable;
 
 /**
  * Created by mnix05 on 11/3/14.
@@ -20,8 +21,8 @@ public class OpenSessionService extends DefaultService<OpenSessionRequest> {
 
 	@Nullable
 	@Override
-	protected Object processRequestImpl(@Nonnull OpenSessionRequest actionData, @Nonnull IContext context,
-										@Nonnull IDataGrid dataGrid) throws Exception {
+	protected Serializable processRequestImpl(@Nonnull OpenSessionRequest actionData, @Nonnull IContext context,
+											  @Nonnull IDataGrid dataGrid) throws Exception {
 		dataGrid.retrieveContext(context.getId(), actionData.getOverwritesExisting());
 		return null;
 	}

@@ -6,6 +6,7 @@ import br.com.mnix.mazinrpcaiser.server.data.IDataGrid;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.Serializable;
 
 /**
  * Created by mnix05 on 11/4/14.
@@ -20,8 +21,8 @@ public class CloseSessionService extends DefaultService<CloseSessionRequest> {
 
 	@Nullable
 	@Override
-	protected Object processRequestImpl(@Nonnull CloseSessionRequest actionData, @Nonnull IContext context,
-										@Nonnull IDataGrid dataGrid) throws Exception {
+	protected Serializable processRequestImpl(@Nonnull CloseSessionRequest actionData, @Nonnull IContext context,
+											  @Nonnull IDataGrid dataGrid) throws Exception {
 		dataGrid.deleteContext(context.getId());
 		return null;
 	}

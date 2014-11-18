@@ -29,8 +29,8 @@ public class CreateObjectService extends DefaultService<CreateObjectRequest> {
 	@SuppressWarnings("unchecked")
 	@Nullable
 	@Override
-	protected Object processRequestImpl(@Nonnull CreateObjectRequest actionData, @Nonnull IContext context,
-										@Nonnull IDataGrid dataGrid) throws Exception {
+	protected Serializable processRequestImpl(@Nonnull CreateObjectRequest actionData, @Nonnull IContext context,
+											  @Nonnull IDataGrid dataGrid) throws Exception {
 		Class serviceClass = actionData.getServiceClass();
 
 		if(serviceClass.isAnnotationPresent(DistributedVersion.class)) {

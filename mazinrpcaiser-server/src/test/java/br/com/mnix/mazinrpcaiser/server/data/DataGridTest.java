@@ -1,4 +1,4 @@
-package br.com.mnix.mazinrpcaiser.server;
+package br.com.mnix.mazinrpcaiser.server.data;
 
 import br.com.mnix.mazinrpcaiser.server.data.DataGrid;
 import br.com.mnix.mazinrpcaiser.server.data.IContext;
