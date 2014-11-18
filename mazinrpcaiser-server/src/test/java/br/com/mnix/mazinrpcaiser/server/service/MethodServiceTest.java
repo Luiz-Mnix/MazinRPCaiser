@@ -19,7 +19,7 @@ public class MethodServiceTest {
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final MethodService handler = new MethodService();
 		final String objectId = "obj";
-		final MethodRequest data = new MethodRequest(objectId, "foo", new Serializable[] { 1 });
+		final MethodRequest data = new MethodRequest(objectId, "foo", 1);
 		final String topicId = "topic";
 		final String contextId = "context1";
 		final SessionData session = new SessionData(contextId, "127.0.0.1");
@@ -63,7 +63,7 @@ public class MethodServiceTest {
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final MethodService handler = new MethodService();
 		final String objectId = "obj";
-		final MethodRequest data = new MethodRequest(objectId, "primitiveArgMethod", new Serializable[] { 1 });
+		final MethodRequest data = new MethodRequest(objectId, "primitiveArgMethod", 1);
 		final String topicId = "topic";
 		final String contextId = "context1";
 		final SessionData session = new SessionData(contextId, "127.0.0.1");
@@ -83,7 +83,7 @@ public class MethodServiceTest {
 		final MethodService handler = new MethodService();
 		final String objectId = "obj";
 		final float value = 1.f;
-		final MethodRequest data = new MethodRequest(objectId, "wrapperArgMethod", new Serializable[] { value });
+		final MethodRequest data = new MethodRequest(objectId, "wrapperArgMethod", value);
 		final String topicId = "topic";
 		final String contextId = "context1";
 		final SessionData session = new SessionData(contextId, "127.0.0.1");

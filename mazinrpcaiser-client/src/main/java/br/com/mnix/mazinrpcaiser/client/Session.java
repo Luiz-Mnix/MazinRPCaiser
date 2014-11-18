@@ -49,9 +49,9 @@ public final class Session {
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	public void invalidate() throws ServerExecutionException, InterruptedException {
+	public void invalidate(boolean wipesContext) throws ServerExecutionException, InterruptedException {
 		if(isOpened()) {
-			mServiceClient.makeRequest(new CloseSessionRequest(), getSessionData());
+			mServiceClient.makeRequest(new CloseSessionRequest(wipesContext), getSessionData());
 			mServiceClient = null;
 			mDataGridClient.disconnect();
 		}

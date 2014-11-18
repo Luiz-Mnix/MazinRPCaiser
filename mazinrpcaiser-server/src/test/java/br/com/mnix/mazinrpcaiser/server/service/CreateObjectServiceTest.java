@@ -80,7 +80,7 @@ public class CreateObjectServiceTest {
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final CreateObjectService handler = new CreateObjectService();
 		final String objectId = "obj";
-		final CreateObjectRequest data = new CreateObjectRequest(objectId, IDistributedStub.class, new Serializable[] { "2" });
+		final CreateObjectRequest data = new CreateObjectRequest(objectId, IDistributedStub.class, "2");
 		final String topicId = "topic";
 		final String contextId = "context1";
 		final SessionData session = new SessionData(contextId, "127.0.0.1");
@@ -99,7 +99,7 @@ public class CreateObjectServiceTest {
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final CreateObjectService handler = new CreateObjectService();
 		final String objectId = "obj";
-		final CreateObjectRequest data = new CreateObjectRequest(objectId, IDistributedStub.class, new Serializable[] { true });
+		final CreateObjectRequest data = new CreateObjectRequest(objectId, IDistributedStub.class, true);
 		final String topicId = "topic";
 		final String contextId = "context1";
 		final SessionData session = new SessionData(contextId, "127.0.0.1");
@@ -117,7 +117,7 @@ public class CreateObjectServiceTest {
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final CreateObjectService handler = new CreateObjectService();
 		final String objectId = "obj";
-		final CreateObjectRequest data = new CreateObjectRequest(objectId, IDistributedStub.class, new Serializable[] { 1 });
+		final CreateObjectRequest data = new CreateObjectRequest(objectId, IDistributedStub.class, 1);
 		final String topicId = "topic";
 		final String contextId = "context1";
 		final SessionData session = new SessionData(contextId, "127.0.0.1");

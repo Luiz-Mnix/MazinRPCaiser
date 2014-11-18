@@ -10,7 +10,6 @@ import br.com.mnix.mazinrpcaiser.server.data.IDataGrid;
 import br.com.mnix.mazinrpcaiser.server.service.RequestHasNoServiceException;
 import br.com.mnix.mazinrpcaiser.server.service.IService;
 import br.com.mnix.mazinrpcaiser.server.service.ServiceFactory;
-import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.HazelcastInstanceNotActiveException;
 import org.reflections.Reflections;
 
