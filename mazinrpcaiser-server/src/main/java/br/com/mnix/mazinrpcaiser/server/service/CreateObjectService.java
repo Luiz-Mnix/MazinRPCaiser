@@ -1,7 +1,8 @@
 package br.com.mnix.mazinrpcaiser.server.service;
 
-import br.com.mnix.mazinrpcaiser.common.*;
-import br.com.mnix.mazinrpcaiser.common.exception.InterfaceDoesNotExistException;
+import br.com.mnix.mazinrpcaiser.common.DefaultImplementation;
+import br.com.mnix.mazinrpcaiser.common.DistributedVersion;
+import br.com.mnix.mazinrpcaiser.common.MazinRPCaiserConstants;
 import br.com.mnix.mazinrpcaiser.common.exception.InterfaceHasNoDefaultImplementationException;
 import br.com.mnix.mazinrpcaiser.common.request.CreateObjectRequest;
 import br.com.mnix.mazinrpcaiser.server.data.IContext;
@@ -26,41 +27,50 @@ public class CreateObjectService extends DefaultService<CreateObjectRequest> {
 		super(CreateObjectRequest.class);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Nullable
 	@Override
-	protected Serializable processRequestImpl(@Nonnull CreateObjectRequest actionData, @Nonnull IContext context,
+	protected Serializable processRequestImpl(@Nonnull CreateObjectRequest request, @Nonnull IContext context,
 											  @Nonnull IDataGrid dataGrid) throws Exception {
-		Class serviceClass = actionData.getServiceClass();
+		Class implementationClass = request.getImplementationClass();
 
-		if(serviceClass.isAnnotationPresent(DistributedVersion.class)) {
-			DistributedVersion distributedVersion = (DistributedVersion) serviceClass.getAnnotation(
+		if(implementationClass == null) {
+			Class distributedInterfaceClass = request.getDistributedInterface();
+			DistributedVersion distributedVersion = (DistributedVersion) distributedInterfaceClass.getAnnotation(
 					DistributedVersion.class
 			);
-			Class backendClass = distributedVersion.of();
-			Set<Class<?>> implementationClasses = new Reflections(MazinRPCaiserConstants.DEFAULT_USER_PACKAGE)
-					.getSubTypesOf(backendClass);
-
-			for(Class<?> implementationClass : implementationClasses) {
-				if(implementationClass.isAnnotationPresent(DefaultImplementation.class)
-						&& Serializable.class.isAssignableFrom(implementationClass)) {
-
-					Class<?>[] argsClasses = ObjectUtils.getTypesOfObjects(actionData.getInitializationArgs());
-					Constructor constructor = implementationClass.getConstructor(argsClasses);
-					Serializable obj;
-					try {
-						obj = (Serializable) constructor.newInstance((Object[]) actionData.getInitializationArgs());
-					} catch (InvocationTargetException e) {
-						throw (Exception) e.getCause();
-					}
-					context.putObject(actionData.getObjectId(), obj);
-					return null;
-				}
-			}
-
-			throw new InterfaceHasNoDefaultImplementationException();
+			Class backendInterfaceClass = distributedVersion.of();
+			implementationClass = getDefaultImplementation(backendInterfaceClass);
 		}
 
-		throw new InterfaceDoesNotExistException();
+		Serializable obj = createObject(implementationClass, request.getInitializationArgs());
+		context.putObject(request.getObjectId(), obj);
+		return null;
+	}
+
+	@Nonnull private static Serializable createObject(@Nonnull Class<?> objClass,
+													  @Nullable Serializable[] initArgs) throws Exception {
+		Class<?>[] argsClasses = ObjectUtils.getTypesOfObjects(initArgs);
+		Constructor constructor = objClass.getConstructor(argsClasses);
+
+		try {
+			return (Serializable) constructor.newInstance((Object[]) initArgs);
+		} catch (InvocationTargetException e) {
+			throw (Exception) e.getCause();
+		}
+	}
+
+	@Nonnull private static Class<?> getDefaultImplementation(@Nonnull Class backendInterfaceClass)
+			throws InterfaceHasNoDefaultImplementationException {
+		@SuppressWarnings("unchecked") Set<Class<?>> implementationClasses =
+				new Reflections(MazinRPCaiserConstants.DEFAULT_USER_PACKAGE).getSubTypesOf(backendInterfaceClass);
+
+		for(Class<?> implementationClass : implementationClasses) {
+			if(implementationClass.isAnnotationPresent(DefaultImplementation.class)
+					&& Serializable.class.isAssignableFrom(implementationClass)) {
+				return implementationClass;
+			}
+		}
+
+		throw new InterfaceHasNoDefaultImplementationException();
 	}
 }

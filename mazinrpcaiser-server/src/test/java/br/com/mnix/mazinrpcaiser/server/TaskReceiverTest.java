@@ -240,9 +240,9 @@ public class TaskReceiverTest {
 	public static class Stub2Service implements IService {
 		@Nullable
 		@Override
-		public Serializable processRequest(@Nonnull RequestEnvelope action, @Nonnull IDataGrid dataGrid)
+		public Serializable processRequest(@Nonnull RequestEnvelope requestEnv, @Nonnull IDataGrid dataGrid)
 				throws Exception {
-			int foo = ((Stub2Request)action.getRequest()).isFoo();
+			int foo = ((Stub2Request) requestEnv.getRequest()).isFoo();
 			if(foo == 0) {
 				throw new IllegalArgumentException();
 			}

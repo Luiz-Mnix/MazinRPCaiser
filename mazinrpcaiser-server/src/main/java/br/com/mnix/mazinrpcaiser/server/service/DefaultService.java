@@ -21,17 +21,18 @@ public abstract class DefaultService<T extends Serializable> implements IService
 		mDataClass = dataClass;
 	}
 
-	@Nullable protected abstract Serializable processRequestImpl(@Nonnull T actionData, @Nonnull IContext context,
+	@Nullable protected abstract Serializable processRequestImpl(@Nonnull T request, @Nonnull IContext context,
 																 @Nonnull IDataGrid dataGrid) throws Exception;
 
 	@SuppressWarnings("unchecked")
 	@Nullable
 	@Override
-	public Serializable processRequest(@Nonnull RequestEnvelope action, @Nonnull IDataGrid dataGrid) throws Exception {
-		if(action.getRequest().getClass().isAssignableFrom(mDataClass)) {
-			IContext context = dataGrid.retrieveContext(action.getSessionData().getContextId(), false);
+	public Serializable processRequest(@Nonnull RequestEnvelope requestEnv, @Nonnull IDataGrid dataGrid)
+			throws Exception {
+		if(requestEnv.getRequest().getClass().isAssignableFrom(mDataClass)) {
+			IContext context = dataGrid.retrieveContext(requestEnv.getSessionData().getContextId(), false);
 			Serializable processedData = processRequestImpl(
-					(T) action.getRequest(),
+					(T) requestEnv.getRequest(),
 					context,
 					dataGrid
 			);
