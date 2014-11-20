@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 
 public class CloseSessionServiceTest {
 	@Test
-	public void testProcessAction_WipesContext() throws Exception {
+	public void testProcessAction_WipesContext() throws Throwable {
 		final IDataGrid dataGrid = DataGridFactory.getGrid();
 		final CloseSessionService handler = new CloseSessionService();
 		final String contextId = "context";
@@ -33,7 +33,7 @@ public class CloseSessionServiceTest {
 	}
 
 	@Test
-	public void testProcessAction_DoesntWipeContext() throws Exception {
+	public void testProcessAction_DoesntWipeContext() throws Throwable {
 		final IDataGrid dataGrid = DataGridFactory.getGrid();
 		final CloseSessionService handler = new CloseSessionService();
 		final String contextId = "context3";

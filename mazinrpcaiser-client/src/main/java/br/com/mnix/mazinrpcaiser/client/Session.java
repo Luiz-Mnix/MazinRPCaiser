@@ -7,6 +7,7 @@ import br.com.mnix.mazinrpcaiser.common.exception.ServerExecutionException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 /**
  * Created by mnix05 on 11/3/14.
@@ -26,6 +27,27 @@ public final class Session {
 
 	@Nullable private IServiceClient mServiceClient = null;
 
+	@Nonnull private final Object mProxyFactoryLock = new Object();
+	@Nullable private volatile IProxyFactory mProxyFactory = null;
+	@Nonnull public IProxyFactory getProxyFactory() {
+		if(!isOpened()) {
+			throw new IllegalStateException("Session must be opened first.");
+		}
+		// Double-checked singleton
+		IProxyFactory singleton = mProxyFactory;
+		if(singleton == null) {
+			synchronized (mProxyFactoryLock) {
+				singleton = mProxyFactory;
+				if(singleton == null) {
+					assert mServiceClient != null;
+					singleton = new ProxyFactory(mServiceClient);
+					mProxyFactory = singleton;
+				}
+			}
+		}
+		return singleton;
+	}
+
 	public boolean isOpened() {
 		return mDataGridClient.isConnected() && mServiceClient != null;
 	}
@@ -36,22 +58,22 @@ public final class Session {
 	}
 
 	public Session(@Nonnull String serverAddress) {
-		this(java.util.UUID.randomUUID().toString(), serverAddress);
+		this(UUID.randomUUID().toString(), serverAddress);
 	}
 
 	public void open(boolean overwritesExisting)
 			throws DataGridUnavailableException, ServerExecutionException, InterruptedException {
 		if(!isOpened()) {
 			mDataGridClient.connect();
-			mServiceClient = new ServiceClient(mDataGridClient);
-			mServiceClient.makeRequest(new OpenSessionRequest(overwritesExisting), getSessionData());
+			mServiceClient = new ServiceClient(getSessionData(), mDataGridClient);
+			mServiceClient.makeRequest(new OpenSessionRequest(overwritesExisting));
 		}
 	}
 
 	@SuppressWarnings("ConstantConditions")
 	public void invalidate(boolean wipesContext) throws ServerExecutionException, InterruptedException {
 		if(isOpened()) {
-			mServiceClient.makeRequest(new CloseSessionRequest(wipesContext), getSessionData());
+			mServiceClient.makeRequest(new CloseSessionRequest(wipesContext));
 			mServiceClient = null;
 			mDataGridClient.disconnect();
 		}

@@ -65,7 +65,7 @@ public class TaskReceiver implements Runnable {
 
 			try {
 				response = mService.processRequest(requestEnvelope, mDataGrid);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				exception = new ServerExecutionException(e);
 			}
 

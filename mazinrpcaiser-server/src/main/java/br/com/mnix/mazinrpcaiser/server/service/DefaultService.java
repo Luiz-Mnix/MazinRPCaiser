@@ -22,13 +22,13 @@ public abstract class DefaultService<T extends Serializable> implements IService
 	}
 
 	@Nullable protected abstract Serializable processRequestImpl(@Nonnull T request, @Nonnull IContext context,
-																 @Nonnull IDataGrid dataGrid) throws Exception;
+																 @Nonnull IDataGrid dataGrid) throws Throwable;
 
 	@SuppressWarnings("unchecked")
 	@Nullable
 	@Override
 	public Serializable processRequest(@Nonnull RequestEnvelope requestEnv, @Nonnull IDataGrid dataGrid)
-			throws Exception {
+			throws Throwable {
 		if(requestEnv.getRequest().getClass().isAssignableFrom(mDataClass)) {
 			IContext context = dataGrid.retrieveContext(requestEnv.getSessionData().getContextId(), false);
 			Serializable processedData = processRequestImpl(

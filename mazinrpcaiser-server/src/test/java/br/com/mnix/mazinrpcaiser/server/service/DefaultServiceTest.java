@@ -10,7 +10,7 @@ import java.io.Serializable;
 
 public class DefaultServiceTest {
 	@Test(expected = IllegalArgumentException.class)
-	public void testProcessAction_wrongData() throws Exception {
+	public void testProcessAction_wrongData() throws Throwable {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final DefaultService handler = new OpenSessionService();
