@@ -25,6 +25,7 @@ public final class Session {
 		return mDataGridClient;
 	}
 
+	@SuppressWarnings("FieldAccessedSynchronizedAndUnsynchronized")
 	@Nullable private IServiceClient mServiceClient = null;
 
 	@Nonnull private final Object mProxyFactoryLock = new Object();

@@ -82,6 +82,7 @@ public class DistributedObjectProxyTest {
 						= HazelcastUtils.getQueue(RequestUtils.getRequestGroup(MethodRequest.class));
 				try {
 					RequestEnvelope reqEnv = queue.take();
+					//noinspection ConstantConditions
 					HazelcastUtils.postMessage(
 							reqEnv.getTopicId(),
 							new ResponseEnvelope(
