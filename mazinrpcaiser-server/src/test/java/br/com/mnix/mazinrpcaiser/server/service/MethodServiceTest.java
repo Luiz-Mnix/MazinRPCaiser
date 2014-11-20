@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 public class MethodServiceTest {
 
 	@Test
-	public void testProcessAction_CorrectMethod() throws Exception {
+	public void testProcessAction_CorrectMethod() throws Throwable {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final MethodService handler = new MethodService();
@@ -38,7 +38,7 @@ public class MethodServiceTest {
 	}
 
 	@Test(expected = NotImplementedException.class)
-	public void testProcessAction_MethodException() throws Exception {
+	public void testProcessAction_MethodException() throws Throwable {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final MethodService handler = new MethodService();
@@ -58,7 +58,7 @@ public class MethodServiceTest {
 	}
 
 	@Test(expected = NoSuchMethodException.class)
-	public void testProcessAction_PrimitiveArgs() throws Exception {
+	public void testProcessAction_PrimitiveArgs() throws Throwable {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final MethodService handler = new MethodService();
@@ -77,7 +77,7 @@ public class MethodServiceTest {
 	}
 
 	@Test
-	public void testProcessAction_WrapperArgs_PrimitiveReturn() throws Exception {
+	public void testProcessAction_WrapperArgs_PrimitiveReturn() throws Throwable {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final MethodService handler = new MethodService();

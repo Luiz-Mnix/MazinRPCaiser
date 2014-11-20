@@ -17,31 +17,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class CreateObjectServiceTest {
-	@Test(expected = IllegalArgumentException.class)
-	public void testProcessAction_BaselessService_ShouldThrowException() throws Exception {
-		// Arrange
-		final IDataGrid datagrid = DataGridFactory.getGrid();
-		final CreateObjectService handler = new CreateObjectService();
-		final String objectId = "obj";
-		final CreateObjectRequest data = new CreateObjectRequest(objectId, IFake.class, null);
-		final String topicId = "topic";
-		final String contextId = "context1";
-		final SessionData session = new SessionData(contextId, "127.0.0.1");
-		final RequestEnvelope action = new RequestEnvelope(topicId, session, data);
-
-		// Act
-		datagrid.raise();
-		handler.processRequest(action, datagrid);
-		datagrid.shutdown();
-	}
-
 	@Test(expected = InterfaceHasNoDefaultImplementationException.class)
-	public void testProcessAction_NonDefaultImplementation_ShouldThrowException() throws Exception {
+	public void testProcessAction_NonDefaultImplementation_ShouldThrowException() throws Throwable {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final CreateObjectService handler = new CreateObjectService();
 		final String objectId = "obj";
-		final CreateObjectRequest data = new CreateObjectRequest(objectId, IDistributedNonDefaultStub.class, null);
+		final CreateObjectRequest data = new CreateObjectRequest(objectId, IDistributedNonDefaultStub.class);
 		final String topicId = "topic";
 		final String contextId = "context1";
 		final SessionData session = new SessionData(contextId, "127.0.0.1");
@@ -54,12 +36,12 @@ public class CreateObjectServiceTest {
 	}
 
 	@Test
-	public void testProcessAction_DefaultImplementation() throws Exception {
+	public void testProcessAction_DefaultImplementation() throws Throwable {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final CreateObjectService handler = new CreateObjectService();
 		final String objectId = "obj";
-		final CreateObjectRequest data = new CreateObjectRequest(objectId, IDistributedStub.class, null);
+		final CreateObjectRequest data = new CreateObjectRequest(objectId, IDistributedStub.class);
 		final String topicId = "topic";
 		final String contextId = "context1";
 		final SessionData session = new SessionData(contextId, "127.0.0.1");
@@ -78,7 +60,7 @@ public class CreateObjectServiceTest {
 	}
 
 	@Test(expected = NoSuchMethodException.class)
-	public void testProcessAction_DefaultImplementationInvalidConstructor() throws Exception {
+	public void testProcessAction_DefaultImplementationInvalidConstructor() throws Throwable {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final CreateObjectService handler = new CreateObjectService();
@@ -97,7 +79,7 @@ public class CreateObjectServiceTest {
 	}
 
 	@Test(expected = NoSuchMethodException.class)
-	public void testProcessAction_DefaultImplementationPrimitiveConstructor() throws Exception {
+	public void testProcessAction_DefaultImplementationPrimitiveConstructor() throws Throwable {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final CreateObjectService handler = new CreateObjectService();
@@ -115,7 +97,7 @@ public class CreateObjectServiceTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testProcessAction_DefaultImplementationWrapperConstructor() throws Exception {
+	public void testProcessAction_DefaultImplementationWrapperConstructor() throws Throwable {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final CreateObjectService handler = new CreateObjectService();
@@ -133,7 +115,7 @@ public class CreateObjectServiceTest {
 	}
 
 	@Test
-	public void testProcessAction_CorrectNonDefaultImplementation() throws Exception {
+	public void testProcessAction_CorrectNonDefaultImplementation() throws Throwable {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final CreateObjectService handler = new CreateObjectService();
@@ -154,46 +136,6 @@ public class CreateObjectServiceTest {
 		// Assert
 		assertTrue(context.containsObjectId(objectId));
 		assertEquals(NonDefaultStubStub.class, context.getSerializable(objectId).getClass());
-		datagrid.shutdown();
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testProcessAction_InterfaceNonDefaultImplementation() throws Exception {
-		// Arrange
-		final IDataGrid datagrid = DataGridFactory.getGrid();
-		final CreateObjectService handler = new CreateObjectService();
-		final String objectId = "obj";
-		final CreateObjectRequest data = new CreateObjectRequest(
-				objectId, IDistributedStub.class, IFake.class
-		);
-		final String topicId = "topic";
-		final String contextId = "context1";
-		final SessionData session = new SessionData(contextId, "127.0.0.1");
-		final RequestEnvelope action = new RequestEnvelope(topicId, session, data);
-
-		// Act
-		datagrid.raise();
-		handler.processRequest(action, datagrid);
-		datagrid.shutdown();
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testProcessAction_IncorrectNonDefaultImplementation() throws Exception {
-		// Arrange
-		final IDataGrid datagrid = DataGridFactory.getGrid();
-		final CreateObjectService handler = new CreateObjectService();
-		final String objectId = "obj";
-		final CreateObjectRequest data = new CreateObjectRequest(
-				objectId, IDistributedStub.class, FakeStubStub.class
-		);
-		final String topicId = "topic";
-		final String contextId = "context1";
-		final SessionData session = new SessionData(contextId, "127.0.0.1");
-		final RequestEnvelope action = new RequestEnvelope(topicId, session, data);
-
-		// Act
-		datagrid.raise();
-		handler.processRequest(action, datagrid);
 		datagrid.shutdown();
 	}
 
@@ -225,7 +167,4 @@ public class CreateObjectServiceTest {
 	// DEFAULTLESS IMPLEMENTATION STUB
 	private interface INonDefaultStub extends Serializable {}
 	@DistributedVersion(of = INonDefaultStub.class) private interface IDistributedNonDefaultStub extends Serializable {}
-
-	// Baseless Service
-	private interface IFake extends Serializable {}
 }

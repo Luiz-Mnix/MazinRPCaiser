@@ -14,18 +14,14 @@ import java.io.Serializable;
  * @author mnix05
  */
 public interface IServiceClient {
-	@Nullable Serializable makeRequest(@Nonnull Serializable request, @Nonnull SessionData session, int timeout)
+	@Nonnull SessionData getSessionData();
+
+	@Nullable Serializable makeRequest(@Nonnull Serializable request, int timeout)
 			throws InterruptedException, ServerExecutionException;
 
-	@Nullable Serializable makeRequest(@Nonnull Serializable actionData, @Nonnull SessionData session)
+	@Nullable Serializable makeRequest(@Nonnull Serializable actionData)
 			throws ServerExecutionException, InterruptedException;
 
-// --Commented out by Inspection START (11/10/14, 3:44 PM):
-//	@Nullable <T extends Serializable> T makeRequest(@Nonnull IReturn<T> actionData, @Nonnull SessionData session,
-//													 int timeout)
-//			throws ServerExecutionException, InterruptedException;
-// --Commented out by Inspection STOP (11/10/14, 3:44 PM)
-
-	@Nullable <T extends Serializable> T makeRequest(@Nonnull IReturn<T> actionData, @Nonnull SessionData session)
+	@Nullable <T extends Serializable> T makeRequest(@Nonnull IReturn<T> actionData)
 			throws ServerExecutionException, InterruptedException;
 }

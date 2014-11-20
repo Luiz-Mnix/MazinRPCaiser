@@ -30,14 +30,13 @@ public class CreateObjectService extends DefaultService<CreateObjectRequest> {
 	@Nullable
 	@Override
 	protected Serializable processRequestImpl(@Nonnull CreateObjectRequest request, @Nonnull IContext context,
-											  @Nonnull IDataGrid dataGrid) throws Exception {
+											  @Nonnull IDataGrid dataGrid) throws Throwable {
 		Class implementationClass = request.getImplementationClass();
 
 		if(implementationClass == null) {
 			Class distributedInterfaceClass = request.getDistributedInterface();
-			DistributedVersion distributedVersion = (DistributedVersion) distributedInterfaceClass.getAnnotation(
-					DistributedVersion.class
-			);
+			DistributedVersion distributedVersion =
+					(DistributedVersion) distributedInterfaceClass.getAnnotation(DistributedVersion.class);
 			Class backendInterfaceClass = distributedVersion.of();
 			implementationClass = getDefaultImplementation(backendInterfaceClass);
 		}
@@ -48,14 +47,14 @@ public class CreateObjectService extends DefaultService<CreateObjectRequest> {
 	}
 
 	@Nonnull private static Serializable createObject(@Nonnull Class<?> objClass,
-													  @Nullable Serializable[] initArgs) throws Exception {
+													  @Nullable Serializable[] initArgs) throws Throwable {
 		Class<?>[] argsClasses = ObjectUtils.getTypesOfObjects(initArgs);
 		Constructor constructor = objClass.getConstructor(argsClasses);
 
 		try {
 			return (Serializable) constructor.newInstance((Object[]) initArgs);
 		} catch (InvocationTargetException e) {
-			throw (Exception) e.getCause();
+			throw e.getCause();
 		}
 	}
 

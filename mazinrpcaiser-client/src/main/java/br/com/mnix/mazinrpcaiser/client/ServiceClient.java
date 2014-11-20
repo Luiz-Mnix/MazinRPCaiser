@@ -28,24 +28,32 @@ public class ServiceClient implements IServiceClient, MessageListener {
 
 	@Nonnull private final IDataGridClient mClient;
 
-	public ServiceClient(@Nonnull IDataGridClient client) {
+	public ServiceClient(@Nonnull SessionData sessionData, @Nonnull IDataGridClient client) {
+		mSessionData = sessionData;
 		mClient = client;
+	}
+
+	@Nonnull private final SessionData mSessionData;
+	@Nonnull
+	@Override
+	public SessionData getSessionData() {
+		return mSessionData;
 	}
 
 	@Override
 	@SuppressWarnings("ThrowableResultOfMethodCallIgnored")
 	@Nullable
-	public Serializable makeRequest(@Nonnull Serializable request, @Nonnull SessionData session, int timeout)
+	public Serializable makeRequest(@Nonnull Serializable request, int timeout)
 			throws InterruptedException, ServerExecutionException {
 		String topicId = UUID.randomUUID().toString();
 		Semaphore semaphore = new Semaphore(0);
 		mSemaphores.put(topicId, semaphore);
 
-		RequestEnvelope requestEnvelope = new RequestEnvelope(topicId, session, request);
+		RequestEnvelope requestEnvelope = new RequestEnvelope(topicId, getSessionData(), request);
 		String listenerId = mClient.addListener(topicId, this);
 		mClient.sendData(RequestUtils.getRequestGroup(request), requestEnvelope);
 
-		new Timer().schedule(new TimeoutTimer(topicId, session), timeout);
+		new Timer().schedule(new TimeoutTimer(topicId, getSessionData()), timeout);
 		semaphore.acquire();
 
 		mClient.removeListener(topicId, listenerId);
@@ -61,23 +69,17 @@ public class ServiceClient implements IServiceClient, MessageListener {
 
 	@Override
 	@Nullable
-	public Serializable makeRequest(@Nonnull Serializable actionData, @Nonnull SessionData session)
+	public Serializable makeRequest(@Nonnull Serializable actionData)
 			throws ServerExecutionException, InterruptedException {
-		return makeRequest(actionData, session, DEFAULT_TIMEOUT);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Nullable
-	public <T extends Serializable> T makeRequest(@Nonnull IReturn<T> actionData, @Nonnull SessionData session, int timeout)
-			throws ServerExecutionException, InterruptedException {
-		return (T) makeRequest((Serializable) actionData, session, timeout);
+		return makeRequest(actionData, DEFAULT_TIMEOUT);
 	}
 
 	@Override
 	@Nullable
-	public <T extends Serializable> T makeRequest(@Nonnull IReturn<T> actionData, @Nonnull SessionData session)
+	public <T extends Serializable> T makeRequest(@Nonnull IReturn<T> actionData)
 			throws ServerExecutionException, InterruptedException {
-		return makeRequest(actionData, session, DEFAULT_TIMEOUT);
+		// noinspection unchecked
+		return (T) makeRequest(actionData, DEFAULT_TIMEOUT);
 	}
 
 	@Override

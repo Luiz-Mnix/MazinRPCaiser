@@ -35,8 +35,8 @@ public class ServiceClientTest {
 		// Arrange
 		final String clusterAddress = "127.0.0.1";
 		final IDataGridClient client = new DataGridClient(clusterAddress);
-		final ServiceClient serviceClient = new ServiceClient(client);
 		final SessionData session = new SessionData("foobar", "127.0.0.1");
+		final ServiceClient serviceClient = new ServiceClient(session, client);
 		final Runnable responder = new Runnable() {
 			@Override
 			public void run() {
@@ -62,7 +62,7 @@ public class ServiceClientTest {
 		// Act
 		client.connect();
 		new Thread(responder).start();
-		final String returned = serviceClient.makeRequest(new StubActionData(2), session);
+		final String returned = serviceClient.makeRequest(new StubActionData(2));
 
 		// Assert
 		assertEquals("2_foo", returned);
@@ -73,13 +73,13 @@ public class ServiceClientTest {
 		// Arrange
 		final String clusterAddress = "127.0.0.1";
 		final IDataGridClient client = new DataGridClient(clusterAddress);
-		final ServiceClient serviceClient = new ServiceClient(client);
 		final SessionData session = new SessionData("foobar", "127.0.0.1");
+		final ServiceClient serviceClient = new ServiceClient(session, client);
 
 		// Act
 		client.connect();
 		try {
-			serviceClient.makeRequest(new StubActionData(2), session);
+			serviceClient.makeRequest(new StubActionData(2));
 		} catch (ServerExecutionException e) {
 			throw e.getCause();
 		} catch (InterruptedException e) {
