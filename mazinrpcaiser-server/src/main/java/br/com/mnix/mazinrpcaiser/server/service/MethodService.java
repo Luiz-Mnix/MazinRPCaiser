@@ -3,6 +3,7 @@ package br.com.mnix.mazinrpcaiser.server.service;
 import br.com.mnix.mazinrpcaiser.common.request.MethodRequest;
 import br.com.mnix.mazinrpcaiser.server.data.IContext;
 import br.com.mnix.mazinrpcaiser.server.data.IDataGrid;
+import br.com.mnix.mazinrpcaiser.server.translation.ServerDataTranslator;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,12 +26,13 @@ public class MethodService extends DefaultService<MethodRequest> {
 	@Override
 	protected Serializable processRequestImpl(@Nonnull MethodRequest request, @Nonnull IContext context,
 											  @Nonnull IDataGrid dataGrid) throws Throwable {
-		Class<?>[] argsClasses = ObjectUtils.getTypesOfObjects(request.getArgs());
+		Serializable[] args = (Serializable[]) ServerDataTranslator.decode(request.getArgs(), context);
+		Class<?>[] argsClasses = ObjectUtils.getTypesOfObjects(args);
 		Serializable obj = context.getSerializable(request.getObjectId());
 		Method method = obj.getClass().getDeclaredMethod(request.getMethodName(), argsClasses);
 
 		try {
-			return (Serializable) method.invoke(obj, (Object[]) request.getArgs());
+			return (Serializable) method.invoke(obj, (Object[]) args);
 		} catch (InvocationTargetException e) {
 			throw e.getCause();
 		}

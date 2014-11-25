@@ -1,7 +1,6 @@
 package br.com.mnix.mazinrpcaiser.common;
 
 import javax.annotation.Nonnull;
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -9,7 +8,7 @@ import java.util.Date;
  *
  * @author mnix05
  */
-public class SessionData implements Serializable {
+public class SessionData implements ITransmissible {
 	private static final long serialVersionUID = 6716778116178211799L;
 
 	@Nonnull private final String mContextId;

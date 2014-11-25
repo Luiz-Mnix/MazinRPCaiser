@@ -1,9 +1,9 @@
 package br.com.mnix.mazinrpcaiser.server.service;
 
 import br.com.mnix.mazinrpcaiser.common.RequestEnvelope;
-import br.com.mnix.mazinrpcaiser.server.translation.DataTranslator;
 import br.com.mnix.mazinrpcaiser.server.data.IContext;
 import br.com.mnix.mazinrpcaiser.server.data.IDataGrid;
+import br.com.mnix.mazinrpcaiser.server.translation.ServerDataTranslator;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,7 +37,7 @@ public abstract class DefaultService<T extends Serializable> implements IService
 					dataGrid
 			);
 
-			return DataTranslator.translateData(processedData, context);
+			return ServerDataTranslator.encode(processedData, context);
 		}
 
 		throw new IllegalArgumentException(

@@ -121,7 +121,7 @@ public final class DistributedObjectUtils {
 				return true;
 			}
 
-			if(backendType.isAnnotationPresent(Transmissible.class)) {
+			if(ITransmissible.class.isAssignableFrom(backendType)) {
 				return true;
 			}
 		} else if(expectedDistributedType.isAnnotationPresent(DistributedVersion.class)) {

@@ -7,6 +7,7 @@ import br.com.mnix.mazinrpcaiser.common.exception.InterfaceHasNoDefaultImplement
 import br.com.mnix.mazinrpcaiser.common.request.CreateObjectRequest;
 import br.com.mnix.mazinrpcaiser.server.data.IContext;
 import br.com.mnix.mazinrpcaiser.server.data.IDataGrid;
+import br.com.mnix.mazinrpcaiser.server.translation.ServerDataTranslator;
 import org.reflections.Reflections;
 
 import javax.annotation.Nonnull;
@@ -41,7 +42,8 @@ public class CreateObjectService extends DefaultService<CreateObjectRequest> {
 			implementationClass = getDefaultImplementation(backendInterfaceClass);
 		}
 
-		Serializable obj = createObject(implementationClass, request.getInitializationArgs());
+		Serializable[] args = (Serializable[]) ServerDataTranslator.decode(request.getInitializationArgs(), context);
+		Serializable obj = createObject(implementationClass, args);
 		context.putObject(request.getObjectId(), obj);
 		return null;
 	}
