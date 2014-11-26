@@ -1,9 +1,9 @@
 package br.com.mnix.mazinrpcaiser.server.service;
 
 import br.com.mnix.mazinrpcaiser.common.RequestEnvelope;
-import br.com.mnix.mazinrpcaiser.server.translation.DataTranslator;
 import br.com.mnix.mazinrpcaiser.server.data.IContext;
 import br.com.mnix.mazinrpcaiser.server.data.IDataGrid;
+import br.com.mnix.mazinrpcaiser.server.translation.ServerDataTranslator;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,13 +31,9 @@ public abstract class DefaultService<T extends Serializable> implements IService
 			throws Throwable {
 		if(requestEnv.getRequest().getClass().isAssignableFrom(mDataClass)) {
 			IContext context = dataGrid.retrieveContext(requestEnv.getSessionData().getContextId(), false);
-			Serializable processedData = processRequestImpl(
-					(T) requestEnv.getRequest(),
-					context,
-					dataGrid
-			);
+			Serializable processedData = processRequestImpl((T) requestEnv.getRequest(), context, dataGrid);
 
-			return DataTranslator.translateData(processedData, context);
+			return ServerDataTranslator.encode(processedData, context);
 		}
 
 		throw new IllegalArgumentException(

@@ -1,8 +1,5 @@
 package br.com.mnix.mazinrpcaiser.server.data;
 
-import br.com.mnix.mazinrpcaiser.server.data.DataGrid;
-import br.com.mnix.mazinrpcaiser.server.data.IContext;
-import br.com.mnix.mazinrpcaiser.server.data.IDataGrid;
 import com.hazelcast.core.Message;
 import com.hazelcast.core.MessageListener;
 import org.junit.Test;
@@ -13,7 +10,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class DataGridTest {
 
