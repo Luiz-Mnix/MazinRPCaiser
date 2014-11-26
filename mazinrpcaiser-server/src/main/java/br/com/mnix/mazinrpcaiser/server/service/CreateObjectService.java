@@ -42,9 +42,25 @@ public class CreateObjectService extends DefaultService<CreateObjectRequest> {
 			implementationClass = getDefaultImplementation(backendInterfaceClass);
 		}
 
-		Serializable[] args = (Serializable[]) ServerDataTranslator.decode(request.getInitializationArgs(), context);
+		if(!request.getOverwrites() && context.containsObjectId(request.getObjectId())) {
+			Serializable obj = context.getSerializable(request.getObjectId());
+
+			if(!implementationClass.isInstance(obj)) {
+				throw new IllegalArgumentException("A different object with this ID already exists!");
+			} else {
+				return null;
+			}
+		}
+
+		Serializable[] args;
+		try {
+			args = (Serializable[]) ServerDataTranslator.decode(request.getInitializationArgs(), context);
+		} catch(ClassCastException ignored) {
+			args = null;
+		}
 		Serializable obj = createObject(implementationClass, args);
 		context.putObject(request.getObjectId(), obj);
+
 		return null;
 	}
 

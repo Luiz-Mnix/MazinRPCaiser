@@ -6,6 +6,7 @@ import org.junit.Test;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -114,6 +115,34 @@ public class DataTranslatorTest {
 	}
 
 	@Test
+	public void testTranslateData_ArrayTranslator() throws Exception {
+		// Arrange
+		final int[] array = { 1, 2, 3 };
+
+		// Act
+		final Object translated = DataTranslator.translateData(array, null);
+
+		// Assert
+		assert translated != null;
+		assertTrue(translated.getClass().isArray());
+		assertEquals(array.length, Array.getLength(translated));
+		for(int idx = 0; idx < array.length; ++idx) {
+			assertEquals(array[idx], Array.get(translated, idx));
+		}
+	}
+
+	@Test(expected = TranslatorNotFoundException.class)
+	public void testTranslateData_TranslatorNotFound() throws Exception {
+		// Arrange
+		final Object obj = new Runnable() {
+			@Override public void run() {}
+		};
+
+		// Act & Assert
+		DataTranslator.translateData(obj, null);
+	}
+
+	@Test
 	public void testTranslateData_PrimitiveType() throws Exception {
 		// Arrange
 		final int data = 2;
@@ -150,6 +179,7 @@ public class DataTranslatorTest {
 
 		// Assert
 		for (Class clazz : baseClasses) {
+			findMethod.invoke(null, clazz);
 			assertEquals(translatorCount, translators.size());
 		}
 		for(Class clazz : derivedClasses) {

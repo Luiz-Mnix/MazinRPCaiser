@@ -23,12 +23,15 @@ public class ClientObjectDecoder extends ContextObjectTranslator {
 	@Override
 	public Object translate(@Nonnull Object data, @Nullable ITranslator fallback)
 			throws TranslationException {
-		assert data instanceof ProxiedObject;
-
-		try {
-			return getContext().getSerializable(((ProxiedObject) data).getObjectId());
-		} catch(ObjectNotFoundException e) {
-			throw new TranslationException(e);
+		if(data instanceof ProxiedObject) {
+			try {
+				return getContext().getSerializable(((ProxiedObject) data).getObjectId());
+			} catch(ObjectNotFoundException e) {
+				throw new TranslationException(e);
+			}
 		}
+
+		throw new TranslationException(new IllegalArgumentException("data is not an instance of "
+				+ ProxiedObject.class.getCanonicalName()));
 	}
 }

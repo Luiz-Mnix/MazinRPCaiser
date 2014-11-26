@@ -1,6 +1,7 @@
 package br.com.mnix.mazinrpcaiser.server.translation;
 
 import br.com.mnix.mazinrpcaiser.common.ProxiedObject;
+import br.com.mnix.mazinrpcaiser.common.translation.TranslationException;
 import br.com.mnix.mazinrpcaiser.server.data.DataGridFactory;
 import br.com.mnix.mazinrpcaiser.server.data.IContext;
 import br.com.mnix.mazinrpcaiser.server.data.IDataGrid;
@@ -37,6 +38,23 @@ public class ServerObjectEncoderTest {
 		assertEquals(proxy.getObjectId(), proxy2.getObjectId());
 
 		grid.shutdown();
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testTranslate_UnSerializableData() throws Throwable {
+		// Arrange
+		final String id = "foo";
+		final HashMap<String, Serializable> innerMap = new HashMap<>();
+		final IContext context = new MapContext(id, innerMap);
+		final Object stub1 = new Object();
+		final ServerObjectEncoder translator = new ServerObjectEncoder(context);
+
+		// Act & Assert
+		try {
+			translator.translate(stub1, null);
+		} catch(TranslationException ex) {
+			throw ex.getCause();
+		}
 	}
 
 	@Test

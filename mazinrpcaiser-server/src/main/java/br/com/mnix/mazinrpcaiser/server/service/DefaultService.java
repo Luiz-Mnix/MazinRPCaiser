@@ -31,11 +31,7 @@ public abstract class DefaultService<T extends Serializable> implements IService
 			throws Throwable {
 		if(requestEnv.getRequest().getClass().isAssignableFrom(mDataClass)) {
 			IContext context = dataGrid.retrieveContext(requestEnv.getSessionData().getContextId(), false);
-			Serializable processedData = processRequestImpl(
-					(T) requestEnv.getRequest(),
-					context,
-					dataGrid
-			);
+			Serializable processedData = processRequestImpl((T) requestEnv.getRequest(), context, dataGrid);
 
 			return ServerDataTranslator.encode(processedData, context);
 		}

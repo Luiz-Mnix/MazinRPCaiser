@@ -28,11 +28,11 @@ public class DistributedProxyFactory implements IProxyFactory {
 
 	@Override
 	@Nonnull
-	public <T> T makeRemoteProxy(@Nonnull String id, boolean overwrites,
-								 @Nonnull Class<T> distributedInterface, Serializable... args)
+	public <T> T makeRemoteProxy(@Nonnull String id, boolean overwrites, @Nonnull Class<T> distributedInterface,
+								 Serializable... args)
 			throws Exception {
 		DistributedObjectUtils.assertDistributedType(distributedInterface);
-		CreateObjectRequest request = new CreateObjectRequest(id, distributedInterface, null, args);
+		CreateObjectRequest request = new CreateObjectRequest(id, overwrites, distributedInterface, args);
 		try {
 			getServiceClient().makeRequest(request);
 		} catch(ServerExecutionException ex) {

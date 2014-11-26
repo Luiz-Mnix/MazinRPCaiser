@@ -40,6 +40,7 @@ public class ServerObjectEncoder extends ContextObjectTranslator {
 			return new ProxiedObject(objectId, data.getClass());
 		}
 
-		throw new TranslationException("data cannot be serialized");
+		throw new TranslationException(new IllegalArgumentException("data is not an instance of"
+				+ Serializable.class.getCanonicalName()));
 	}
 }
