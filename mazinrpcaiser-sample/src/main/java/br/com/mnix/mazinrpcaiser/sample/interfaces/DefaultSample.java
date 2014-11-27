@@ -53,7 +53,7 @@ public class DefaultSample implements ISample {
 	}
 
 	@Override
-	public SubSample createSubSample(String s) {
+	public ISubSample createSubSample(String s) {
 		return new SubSample(s);
 	}
 

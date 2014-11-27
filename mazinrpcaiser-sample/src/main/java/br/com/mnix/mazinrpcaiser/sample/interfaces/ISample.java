@@ -16,6 +16,6 @@ public interface ISample extends Serializable {
 	int[] repeat(Integer n);
 	List<String> repeat(String s);
 	Map<String, Integer> repeat(String s, Integer n);
-	SubSample createSubSample(String s);
+	ISubSample createSubSample(String s);
 	void throwException(Boolean throwz);
 }

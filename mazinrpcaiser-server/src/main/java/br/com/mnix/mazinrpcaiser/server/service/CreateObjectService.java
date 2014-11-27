@@ -32,24 +32,25 @@ public class CreateObjectService extends DefaultService<CreateObjectRequest> {
 	@Override
 	protected Serializable processRequestImpl(@Nonnull CreateObjectRequest request, @Nonnull IContext context,
 											  @Nonnull IDataGrid dataGrid) throws Throwable {
+		Class distributedInterfaceClass = request.getDistributedInterface();
+		DistributedVersion distributedVersion =
+				(DistributedVersion) distributedInterfaceClass.getAnnotation(DistributedVersion.class);
+		Class backendInterfaceClass = distributedVersion.of();
 		Class implementationClass = request.getImplementationClass();
-
-		if(implementationClass == null) {
-			Class distributedInterfaceClass = request.getDistributedInterface();
-			DistributedVersion distributedVersion =
-					(DistributedVersion) distributedInterfaceClass.getAnnotation(DistributedVersion.class);
-			Class backendInterfaceClass = distributedVersion.of();
-			implementationClass = getDefaultImplementation(backendInterfaceClass);
-		}
 
 		if(!request.getOverwrites() && context.containsObjectId(request.getObjectId())) {
 			Serializable obj = context.getSerializable(request.getObjectId());
+			Class expectedObjClass = implementationClass != null ? implementationClass : backendInterfaceClass;
 
-			if(!implementationClass.isInstance(obj)) {
-				throw new IllegalArgumentException("A different object with this ID already exists!");
-			} else {
+			if(expectedObjClass.isInstance(obj)) {
 				return null;
 			}
+
+			throw new IllegalArgumentException("A different object with this ID already exists!");
+		}
+
+		if(implementationClass == null) {
+			implementationClass = getDefaultImplementation(backendInterfaceClass);
 		}
 
 		Serializable[] args;

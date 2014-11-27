@@ -37,12 +37,17 @@ public final class DistributedObjectUtils {
 
 		Method[] backendMethods = backendInterface.getDeclaredMethods();
 		for (Method method : distributedInterface.getDeclaredMethods()) {
+			boolean methodDoesntExist = true;
+
 			for (Method backendMethod : backendMethods) {
 				if(method.getName().equals(backendMethod.getName())
 						&& method.getParameterTypes().length == backendMethod.getParameterTypes().length) {
-					continue;
+					methodDoesntExist = false;
+					break;
 				}
+			}
 
+			if(methodDoesntExist) {
 				throw new IllegalDistributedTypeException(
 						"Distributed interface has methods not supported by the backend interface"
 				);
@@ -118,7 +123,12 @@ public final class DistributedObjectUtils {
 	public static boolean isDistributedTypeMapped(@Nonnull Class<?> backendType,
 												  @Nonnull Class<?> expectedDistributedType) {
 		if(backendType.equals(expectedDistributedType)) {
-			if(backendType.getCanonicalName().contains("java")) {
+			if(backendType.getCanonicalName().contains("java") || backendType.isPrimitive()) {
+				return true;
+			}
+
+			if(backendType.isArray()
+					&& isDistributedTypeMapped(backendType.getComponentType(), expectedDistributedType.getComponentType())) {
 				return true;
 			}
 
@@ -150,6 +160,6 @@ public final class DistributedObjectUtils {
 			}
 		}
 
-		throw new IllegalArgumentException("backendType has no distributed version");
+		throw new IllegalArgumentException(backendType.getCanonicalName() + " has no distributed version");
 	}
 }
