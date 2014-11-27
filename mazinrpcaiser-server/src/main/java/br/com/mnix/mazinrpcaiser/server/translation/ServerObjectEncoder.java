@@ -1,5 +1,6 @@
 package br.com.mnix.mazinrpcaiser.server.translation;
 
+import br.com.mnix.mazinrpcaiser.common.DistributedObjectUtils;
 import br.com.mnix.mazinrpcaiser.common.ProxiedObject;
 import br.com.mnix.mazinrpcaiser.common.exception.ObjectNotFoundException;
 import br.com.mnix.mazinrpcaiser.common.translation.ITranslator;
@@ -25,7 +26,6 @@ public class ServerObjectEncoder extends ContextObjectTranslator {
 	@Override
 	public Object translate(@Nonnull Object data, @Nullable ITranslator fallback) throws TranslationException {
 		if(data instanceof Serializable) {
-
 			Serializable trueData = (Serializable) data;
 			String objectId;
 
@@ -37,7 +37,7 @@ public class ServerObjectEncoder extends ContextObjectTranslator {
 
 			getContext().putObject(objectId, trueData);
 
-			return new ProxiedObject(objectId, data.getClass());
+			return new ProxiedObject(objectId, DistributedObjectUtils.getDistributedVersion(data.getClass()));
 		}
 
 		throw new TranslationException(new IllegalArgumentException("data is not an instance of"
