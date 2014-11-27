@@ -43,7 +43,7 @@ public class MethodServiceTest {
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final MethodService handler = new MethodService();
 		final String objectId = "obj";
-		final MethodRequest data = new MethodRequest(objectId, "throwException", null);
+		final MethodRequest data = new MethodRequest(objectId, "throwException");
 		final String topicId = "topic";
 		final String contextId = "context1";
 		final SessionData session = new SessionData(contextId, "127.0.0.1");
