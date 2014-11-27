@@ -1,9 +1,10 @@
 package br.com.mnix.mazinrpcaiser.server.service;
 
 import br.com.mnix.mazinrpcaiser.common.RequestEnvelope;
-import br.com.mnix.mazinrpcaiser.server.translation.DataTranslator;
 import br.com.mnix.mazinrpcaiser.server.data.IContext;
 import br.com.mnix.mazinrpcaiser.server.data.IDataGrid;
+import br.com.mnix.mazinrpcaiser.server.translation.ServerDataTranslator;
+import com.google.common.base.Preconditions;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,30 +22,26 @@ public abstract class DefaultService<T extends Serializable> implements IService
 		mDataClass = dataClass;
 	}
 
-	@Nullable protected abstract Serializable processRequestImpl(@Nonnull T actionData, @Nonnull IContext context,
-																 @Nonnull IDataGrid dataGrid) throws Exception;
+	@Nullable protected abstract Serializable processRequestImpl(@Nonnull T request, @Nonnull IContext context,
+																 @Nonnull IDataGrid dataGrid) throws Throwable;
 
 	@SuppressWarnings("unchecked")
 	@Nullable
 	@Override
-	public Serializable processRequest(@Nonnull RequestEnvelope action, @Nonnull IDataGrid dataGrid) throws Exception {
-		if(action.getRequest().getClass().isAssignableFrom(mDataClass)) {
-			IContext context = dataGrid.retrieveContext(action.getSessionData().getContextId(), false);
-			Serializable processedData = processRequestImpl(
-					(T) action.getRequest(),
-					context,
-					dataGrid
-			);
-
-			return DataTranslator.translateData(processedData, context);
-		}
-
-		throw new IllegalArgumentException(
+	public Serializable processRequest(@Nonnull RequestEnvelope requestEnv, @Nonnull IDataGrid dataGrid)
+			throws Throwable {
+		Preconditions.checkArgument(
+				requestEnv.getRequest().getClass().isAssignableFrom(mDataClass),
 				String.format(
 						"%s can only handle actions of type %s",
 						DefaultService.class.getName(),
 						mDataClass.getName()
 				)
 		);
+
+		IContext context = dataGrid.retrieveContext(requestEnv.getSessionData().getContextId(), false);
+		Serializable processedData = processRequestImpl((T) requestEnv.getRequest(), context, dataGrid);
+
+		return ServerDataTranslator.encode(processedData, context);
 	}
 }

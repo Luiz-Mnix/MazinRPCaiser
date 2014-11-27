@@ -21,9 +21,11 @@ public class CloseSessionService extends DefaultService<CloseSessionRequest> {
 
 	@Nullable
 	@Override
-	protected Serializable processRequestImpl(@Nonnull CloseSessionRequest actionData, @Nonnull IContext context,
+	protected Serializable processRequestImpl(@Nonnull CloseSessionRequest request, @Nonnull IContext context,
 											  @Nonnull IDataGrid dataGrid) throws Exception {
-		dataGrid.deleteContext(context.getId());
+		if(request.getWipesContext()) {
+			dataGrid.deleteContext(context.getId());
+		}
 		return null;
 	}
 }

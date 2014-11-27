@@ -72,7 +72,7 @@ public class SessionTest {
 		assertFalse(session.isOpened());
 		session.open(false);
 		assertTrue(session.isOpened());
-		session.invalidate();
+		session.invalidate(true);
 		assertFalse(session.isOpened());
 	}
 }

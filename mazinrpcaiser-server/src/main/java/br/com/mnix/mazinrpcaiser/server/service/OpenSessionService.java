@@ -21,9 +21,9 @@ public class OpenSessionService extends DefaultService<OpenSessionRequest> {
 
 	@Nullable
 	@Override
-	protected Serializable processRequestImpl(@Nonnull OpenSessionRequest actionData, @Nonnull IContext context,
+	protected Serializable processRequestImpl(@Nonnull OpenSessionRequest request, @Nonnull IContext context,
 											  @Nonnull IDataGrid dataGrid) throws Exception {
-		dataGrid.retrieveContext(context.getId(), actionData.getOverwritesExisting());
+		dataGrid.retrieveContext(context.getId(), request.getOverwritesExisting());
 		return null;
 	}
 }

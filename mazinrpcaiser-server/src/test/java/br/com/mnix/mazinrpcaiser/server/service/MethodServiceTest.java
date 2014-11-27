@@ -14,12 +14,12 @@ import static org.junit.Assert.*;
 public class MethodServiceTest {
 
 	@Test
-	public void testProcessAction_CorrectMethod() throws Exception {
+	public void testProcessAction_CorrectMethod() throws Throwable {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final MethodService handler = new MethodService();
 		final String objectId = "obj";
-		final MethodRequest data = new MethodRequest(objectId, "foo", new Serializable[] { 1 });
+		final MethodRequest data = new MethodRequest(objectId, "foo", 1);
 		final String topicId = "topic";
 		final String contextId = "context1";
 		final SessionData session = new SessionData(contextId, "127.0.0.1");
@@ -38,7 +38,7 @@ public class MethodServiceTest {
 	}
 
 	@Test(expected = NotImplementedException.class)
-	public void testProcessAction_MethodException() throws Exception {
+	public void testProcessAction_MethodException() throws Throwable {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final MethodService handler = new MethodService();
@@ -58,12 +58,12 @@ public class MethodServiceTest {
 	}
 
 	@Test(expected = NoSuchMethodException.class)
-	public void testProcessAction_PrimitiveArgs() throws Exception {
+	public void testProcessAction_PrimitiveArgs() throws Throwable {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final MethodService handler = new MethodService();
 		final String objectId = "obj";
-		final MethodRequest data = new MethodRequest(objectId, "primitiveArgMethod", new Serializable[] { 1 });
+		final MethodRequest data = new MethodRequest(objectId, "primitiveArgMethod", 1);
 		final String topicId = "topic";
 		final String contextId = "context1";
 		final SessionData session = new SessionData(contextId, "127.0.0.1");
@@ -77,13 +77,13 @@ public class MethodServiceTest {
 	}
 
 	@Test
-	public void testProcessAction_WrapperArgs_PrimitiveReturn() throws Exception {
+	public void testProcessAction_WrapperArgs_PrimitiveReturn() throws Throwable {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final MethodService handler = new MethodService();
 		final String objectId = "obj";
 		final float value = 1.f;
-		final MethodRequest data = new MethodRequest(objectId, "wrapperArgMethod", new Serializable[] { value });
+		final MethodRequest data = new MethodRequest(objectId, "wrapperArgMethod", value);
 		final String topicId = "topic";
 		final String contextId = "context1";
 		final SessionData session = new SessionData(contextId, "127.0.0.1");

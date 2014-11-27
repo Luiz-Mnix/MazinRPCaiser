@@ -10,11 +10,11 @@ import java.io.Serializable;
 
 public class DefaultServiceTest {
 	@Test(expected = IllegalArgumentException.class)
-	public void testProcessAction_wrongData() throws Exception {
+	public void testProcessAction_wrongData() throws Throwable {
 		// Arrange
 		final IDataGrid datagrid = DataGridFactory.getGrid();
 		final DefaultService handler = new OpenSessionService();
-		final Serializable data = new CloseSessionRequest();
+		final Serializable data = new CloseSessionRequest(true);
 		final String topicId = "topic";
 		final String contextId = "context1";
 		final SessionData session = new SessionData(contextId, "127.0.0.1");
