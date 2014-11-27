@@ -177,6 +177,27 @@ public class DistributedObjectUtilsTest {
 		// Act & assert
 		Assert.assertTrue(DistributedObjectUtils.isDistributedMethodMapped(method));
 	}
+
+	@Test
+	public void testGetDistributedType_DistributedType() throws Throwable {
+		// Arrange
+		final Class<?> backendType = NonDefaultStubStub.class;
+
+		// Act
+		final Class<?> distributedType = DistributedObjectUtils.getDistributedVersion(backendType);
+
+		// Assert
+		Assert.assertEquals(IDistributedStub.class, distributedType);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testGetDistributedType_NotDistributedType() throws Throwable {
+		// Arrange
+		final Class<?> backendType = IDistributedStub.class;
+
+		// Act & Assert
+		DistributedObjectUtils.getDistributedVersion(backendType);
+	}
 	
 	// DEFAULT IMPLEMENTATION STUB
 	private interface IDefaultStub extends Serializable { void foo(); }

@@ -1,5 +1,6 @@
 package br.com.mnix.mazinrpcaiser.server.translation;
 
+import br.com.mnix.mazinrpcaiser.common.DistributedVersion;
 import br.com.mnix.mazinrpcaiser.common.ProxiedObject;
 import br.com.mnix.mazinrpcaiser.common.translation.TranslationException;
 import br.com.mnix.mazinrpcaiser.server.data.DataGridFactory;
@@ -34,7 +35,7 @@ public class ServerObjectEncoderTest {
 		assertEquals(1, context.size());
 		assertTrue(context.containsObjectId(proxy.getObjectId()));
 		assertEquals(stub1, context.getSerializable(proxy.getObjectId()));
-		assertEquals(stub1.getClass(), proxy.getObjectClass());
+		assertEquals(IDistributedStubEquals.class, proxy.getObjectClass());
 		assertEquals(proxy.getObjectId(), proxy2.getObjectId());
 
 		grid.shutdown();
@@ -74,11 +75,14 @@ public class ServerObjectEncoderTest {
 		assertEquals(1, context.size());
 		assertTrue(context.containsObjectId(proxy.getObjectId()));
 		assertSame(stub1, context.getSerializable(proxy.getObjectId()));
-		assertEquals(stub1.getClass(), proxy.getObjectClass());
+		assertEquals(IDistributedStubEquals.class, proxy.getObjectClass());
 		assertEquals(proxy.getObjectId(), proxy2.getObjectId());
 	}
 
-	public static class StubEquals implements Serializable {
+	private interface IStubEquals extends Serializable {}
+	@DistributedVersion(of = IStubEquals.class) private interface IDistributedStubEquals {}
+
+	private static class StubEquals implements IStubEquals {
 		private static final long serialVersionUID = 4104309686454365439L;
 		@Nonnull private final String mFoo;
 		public StubEquals(@Nonnull String foo) {

@@ -1,6 +1,8 @@
 package br.com.mnix.mazinrpcaiser.common;
 
 import br.com.mnix.mazinrpcaiser.common.exception.IllegalDistributedTypeException;
+import com.google.common.base.Preconditions;
+import org.reflections.Reflections;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -68,11 +70,10 @@ public final class DistributedObjectUtils {
 	}
 
 	public static boolean isDistributedMethodMapped(@Nonnull Method method) {
-		if(!method.getDeclaringClass().isAnnotationPresent(DistributedVersion.class)) {
-			throw new IllegalArgumentException(
-					"method does not belong to an interface annotated with @DistributedVersion"
-			);
-		}
+		Preconditions.checkArgument(
+				method.getDeclaringClass().isAnnotationPresent(DistributedVersion.class),
+				"method does not belong to an interface annotated with @DistributedVersion"
+		);
 
 		Class<?> backendInterface =
 				((DistributedVersion)method.getDeclaringClass().getAnnotation(DistributedVersion.class)).of();
@@ -135,5 +136,20 @@ public final class DistributedObjectUtils {
 		}
 
 		return false;
+	}
+
+	@Nonnull
+	public static Class<?> getDistributedVersion(@Nonnull Class<?> backendType) {
+		Reflections reflections = new Reflections(MazinRPCaiserConstants.DEFAULT_USER_PACKAGE);
+
+		for(Class<?> distributedType : reflections.getTypesAnnotatedWith(DistributedVersion.class)) {
+			Class<?> referencedBackendType =
+					((DistributedVersion)distributedType.getAnnotation(DistributedVersion.class)).of();
+			if(referencedBackendType.isAssignableFrom(backendType)) {
+				return distributedType;
+			}
+		}
+
+		throw new IllegalArgumentException("backendType has no distributed version");
 	}
 }
