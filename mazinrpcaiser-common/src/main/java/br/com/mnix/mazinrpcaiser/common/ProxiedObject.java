@@ -1,5 +1,7 @@
 package br.com.mnix.mazinrpcaiser.common;
 
+import com.google.common.base.Preconditions;
+
 import javax.annotation.Nonnull;
 import java.io.Serializable;
 
@@ -22,6 +24,10 @@ public class ProxiedObject implements Serializable {
 	}
 
 	public ProxiedObject(@Nonnull String objectId, @Nonnull Class<?> objectClass) {
+		Preconditions.checkArgument(
+				objectClass.isAnnotationPresent(DistributedVersion.class),
+				"objectClass is not annotated with " + DistributedVersion.class.getCanonicalName()
+		);
 		mObjectId = objectId;
 		mObjectClass = objectClass;
 	}

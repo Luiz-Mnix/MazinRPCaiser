@@ -4,6 +4,7 @@ import br.com.mnix.mazinrpcaiser.common.RequestEnvelope;
 import br.com.mnix.mazinrpcaiser.server.data.IContext;
 import br.com.mnix.mazinrpcaiser.server.data.IDataGrid;
 import br.com.mnix.mazinrpcaiser.server.translation.ServerDataTranslator;
+import com.google.common.base.Preconditions;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,19 +30,18 @@ public abstract class DefaultService<T extends Serializable> implements IService
 	@Override
 	public Serializable processRequest(@Nonnull RequestEnvelope requestEnv, @Nonnull IDataGrid dataGrid)
 			throws Throwable {
-		if(requestEnv.getRequest().getClass().isAssignableFrom(mDataClass)) {
-			IContext context = dataGrid.retrieveContext(requestEnv.getSessionData().getContextId(), false);
-			Serializable processedData = processRequestImpl((T) requestEnv.getRequest(), context, dataGrid);
-
-			return ServerDataTranslator.encode(processedData, context);
-		}
-
-		throw new IllegalArgumentException(
+		Preconditions.checkArgument(
+				requestEnv.getRequest().getClass().isAssignableFrom(mDataClass),
 				String.format(
 						"%s can only handle actions of type %s",
 						DefaultService.class.getName(),
 						mDataClass.getName()
 				)
 		);
+
+		IContext context = dataGrid.retrieveContext(requestEnv.getSessionData().getContextId(), false);
+		Serializable processedData = processRequestImpl((T) requestEnv.getRequest(), context, dataGrid);
+
+		return ServerDataTranslator.encode(processedData, context);
 	}
 }
