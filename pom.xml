@@ -13,6 +13,7 @@
         <module>mazinrpcaiser-server</module>
         <module>mazinrpcaiser-client</module>
         <module>mazinrpcaiser-client-tests</module>
+        <module>mazinrpcaiser-sample</module>
     </modules>
 
     <properties>

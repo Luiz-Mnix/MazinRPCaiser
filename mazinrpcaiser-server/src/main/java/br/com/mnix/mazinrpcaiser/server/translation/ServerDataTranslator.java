@@ -22,8 +22,17 @@ public final class ServerDataTranslator {
 	}
 
 	@Nullable
-	public static Serializable decode(@Nullable Serializable data, @Nonnull IContext context)
+	public static Serializable decode(@Nullable Serializable[] args, @Nonnull IContext context)
 			throws TranslationException {
-		return (Serializable) translateData(data, new ClientObjectDecoder(context));
+		if(args == null) {
+			return null;
+		}
+
+		Serializable[] translatedArgs = new Serializable[args.length];
+
+		for (int idx = 0; idx < args.length; ++idx) {
+			translatedArgs[idx] = (Serializable) translateData(args[idx], new ClientObjectDecoder(context));
+		}
+		return translatedArgs;
 	}
 }
