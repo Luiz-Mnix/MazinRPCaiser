@@ -1,4 +1,4 @@
-package br.com.mnix.mazinrpcaiser.sample;
+package br.com.mnix.mazinrpcaiser.sample.simple;
 
 import br.com.mnix.mazinrpcaiser.client.Session;
 import br.com.mnix.mazinrpcaiser.client.proxy.IProxy;
@@ -9,8 +9,8 @@ import br.com.mnix.mazinrpcaiser.common.ProxiedObject;
 import br.com.mnix.mazinrpcaiser.common.exception.ServerExecutionException;
 import br.com.mnix.mazinrpcaiser.common.request.CreateObjectRequest;
 import br.com.mnix.mazinrpcaiser.common.request.MethodRequest;
-import br.com.mnix.mazinrpcaiser.sample.interfaces.IDistributedSample;
-import br.com.mnix.mazinrpcaiser.sample.interfaces.IDistributedSubSample;
+import br.com.mnix.mazinrpcaiser.sample.simple.interfaces.IDistributedSample;
+import br.com.mnix.mazinrpcaiser.sample.simple.interfaces.IDistributedSubSample;
 import br.com.mnix.mazinrpcaiser.server.TaskReceiver;
 import br.com.mnix.mazinrpcaiser.server.data.DataGridFactory;
 import br.com.mnix.mazinrpcaiser.server.data.IDataGrid;
@@ -26,22 +26,22 @@ import java.util.Map;
  *
  * @author mnix05
  */
-public final class ServerApp {
+public final class SimpleApp {
 	@Nonnull public static final String SESSION_ID = "session";
 	@Nonnull public static final String SESSION_ID2 = "session2";
 	@Nonnull public static final String SERVER_ADDRESS = "127.0.0.1";
 	@Nonnull public static final String MAIN_OBJ_ID = "OBJ";
 
 	public static void main(String[] args) throws Exception {
-		IDataGrid grid = DataGridFactory.getGrid();
+		IDataGrid grid = DataGridFactory.makeDefaultDataGrid();
 		grid.raise();
 		TaskReceiver.setUpReceivers(grid);
-		openSession1(grid);
-		openSession2(grid);
+		openSession1();
+		openSession2();
 		grid.shutdown();
 	}
 
-	private static void openSession1(IDataGrid grid) throws Exception {
+	private static void openSession1() throws Exception {
 		Session session = new Session(SESSION_ID, SERVER_ADDRESS);
 		session.open(true);
 		IServiceClient client = new ServiceClient(session.getSessionData(), session.getDataGridClient());
@@ -86,12 +86,12 @@ public final class ServerApp {
 		MethodRequest methodRequest6 = new MethodRequest(MAIN_OBJ_ID, "createSubSample", s2);
 		ProxiedObject resultSubSample = (ProxiedObject) client.makeRequest(methodRequest6);
 		assert resultSubSample != null;
-		concurrentAccess(resultSubSample.getObjectId(), grid);
+		concurrentAccess(resultSubSample.getObjectId());
 
 		session.invalidate(true);
 	}
 
-	private static void concurrentAccess(String id, IDataGrid grid) throws Exception {
+	private static void concurrentAccess(String id) throws Exception {
 		Session session = new Session(SESSION_ID, SERVER_ADDRESS);
 		session.open(false);
 		ServiceClient client = new ServiceClient(session.getSessionData(), session.getDataGridClient());
@@ -101,7 +101,7 @@ public final class ServerApp {
 		session.invalidate(false);
 	}
 
-	private static void openSession2(IDataGrid grid) throws Exception {
+	private static void openSession2() throws Exception {
 		Session session = new Session(SESSION_ID2, SERVER_ADDRESS);
 		session.open(true);
 		IProxyFactory factory = session.getProxyFactory();
@@ -135,12 +135,12 @@ public final class ServerApp {
 
 		IDistributedSubSample subSample = sample.createSubSample(s2);
 		IProxy proxy = factory.getProxyOfObject(subSample);
-		concurrentAccess2(proxy.getId(), grid);
+		concurrentAccess2(proxy.getId());
 
 		session.invalidate(true);
 	}
 
-	private static void concurrentAccess2(String id, IDataGrid grid) throws Exception {
+	private static void concurrentAccess2(String id) throws Exception {
 		Session session = new Session(SESSION_ID2, SERVER_ADDRESS);
 		session.open(false);
 		IProxyFactory factory = session.getProxyFactory();

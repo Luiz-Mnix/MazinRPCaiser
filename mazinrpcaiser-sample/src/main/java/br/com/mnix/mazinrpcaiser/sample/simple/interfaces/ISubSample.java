@@ -1,4 +1,4 @@
-package br.com.mnix.mazinrpcaiser.sample.interfaces;
+package br.com.mnix.mazinrpcaiser.sample.simple.interfaces;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;

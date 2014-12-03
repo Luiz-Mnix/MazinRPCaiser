@@ -22,7 +22,7 @@ public class CreateObjectServiceTest {
 	@Test(expected = InterfaceHasNoDefaultImplementationException.class)
 	public void testProcessAction_NonDefaultImplementation_ShouldThrowException() throws Throwable {
 		// Arrange
-		final IDataGrid datagrid = DataGridFactory.getGrid();
+		final IDataGrid datagrid = DataGridFactory.makeDefaultDataGrid();
 		final CreateObjectService handler = new CreateObjectService();
 		final String objectId = "obj";
 		final CreateObjectRequest data = new CreateObjectRequest(objectId, true, IDistributedNonDefaultStub.class);
@@ -40,7 +40,7 @@ public class CreateObjectServiceTest {
 	@Test
 	public void testProcessAction_DefaultImplementation() throws Throwable {
 		// Arrange
-		final IDataGrid datagrid = DataGridFactory.getGrid();
+		final IDataGrid datagrid = DataGridFactory.makeDefaultDataGrid();
 		final CreateObjectService handler = new CreateObjectService();
 		final String objectId = "obj";
 		final CreateObjectRequest data = new CreateObjectRequest(objectId, true, IDistributedStub.class);
@@ -64,7 +64,7 @@ public class CreateObjectServiceTest {
 	@Test(expected = NoSuchMethodException.class)
 	public void testProcessAction_DefaultImplementationInvalidConstructor() throws Throwable {
 		// Arrange
-		final IDataGrid datagrid = DataGridFactory.getGrid();
+		final IDataGrid datagrid = DataGridFactory.makeDefaultDataGrid();
 		final CreateObjectService handler = new CreateObjectService();
 		final String objectId = "obj";
 		final CreateObjectRequest data = new CreateObjectRequest(objectId, true, IDistributedStub.class, "2");
@@ -83,7 +83,7 @@ public class CreateObjectServiceTest {
 	@Test(expected = NoSuchMethodException.class)
 	public void testProcessAction_DefaultImplementationPrimitiveConstructor() throws Throwable {
 		// Arrange
-		final IDataGrid datagrid = DataGridFactory.getGrid();
+		final IDataGrid datagrid = DataGridFactory.makeDefaultDataGrid();
 		final CreateObjectService handler = new CreateObjectService();
 		final String objectId = "obj";
 		final CreateObjectRequest data = new CreateObjectRequest(objectId, true, IDistributedStub.class, true);
@@ -101,7 +101,7 @@ public class CreateObjectServiceTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testProcessAction_DefaultImplementationWrapperConstructor() throws Throwable {
 		// Arrange
-		final IDataGrid datagrid = DataGridFactory.getGrid();
+		final IDataGrid datagrid = DataGridFactory.makeDefaultDataGrid();
 		final CreateObjectService handler = new CreateObjectService();
 		final String objectId = "obj";
 		final CreateObjectRequest data = new CreateObjectRequest(objectId, true, IDistributedStub.class, 1);
@@ -119,7 +119,7 @@ public class CreateObjectServiceTest {
 	@Test
 	public void testProcessAction_CorrectNonDefaultImplementation() throws Throwable {
 		// Arrange
-		final IDataGrid datagrid = DataGridFactory.getGrid();
+		final IDataGrid datagrid = DataGridFactory.makeDefaultDataGrid();
 		final CreateObjectService handler = new CreateObjectService();
 		final String objectId = "obj";
 		final CreateObjectRequest data = new CreateObjectRequest(
@@ -145,7 +145,7 @@ public class CreateObjectServiceTest {
 	@Test
 	public void testProcessAction_ReuseObject() throws Throwable {
 		// Arrange
-		final IDataGrid datagrid = DataGridFactory.getGrid();
+		final IDataGrid datagrid = DataGridFactory.makeDefaultDataGrid();
 		final CreateObjectService handler = new CreateObjectService();
 		final String objectId = "obj";
 		final CreateObjectRequest data1 = new CreateObjectRequest(objectId, true, IDistributedDataStub.class, "foo", "bar");
@@ -173,7 +173,7 @@ public class CreateObjectServiceTest {
 	@Test
 	public void testProcessAction_OverwriteObject() throws Throwable {
 		// Arrange
-		final IDataGrid datagrid = DataGridFactory.getGrid();
+		final IDataGrid datagrid = DataGridFactory.makeDefaultDataGrid();
 		final CreateObjectService handler = new CreateObjectService();
 		final String objectId = "obj";
 		final CreateObjectRequest data1 = new CreateObjectRequest(objectId, true, IDistributedDataStub.class, "foo", "bar");
@@ -200,7 +200,7 @@ public class CreateObjectServiceTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testProcessAction_FailToReuseObject() throws Throwable {
 		// Arrange
-		final IDataGrid datagrid = DataGridFactory.getGrid();
+		final IDataGrid datagrid = DataGridFactory.makeDefaultDataGrid();
 		final CreateObjectService handler = new CreateObjectService();
 		final String objectId = "obj";
 		final CreateObjectRequest data1 = new CreateObjectRequest(objectId, true, IDistributedDataStub.class, "foo", "foo");

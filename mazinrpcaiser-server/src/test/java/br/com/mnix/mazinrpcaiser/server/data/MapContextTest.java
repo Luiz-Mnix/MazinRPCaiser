@@ -69,7 +69,7 @@ public class MapContextTest {
 	public void test_DistributedContext_NotOverriddenEquals() throws Exception {
 		// Arrange
 		final String id = "foo";
-		final IDataGrid grid = DataGridFactory.getGrid();
+		final IDataGrid grid = DataGridFactory.makeDefaultDataGrid();
 		final StubNotEquals stub1 = new StubNotEquals(id);
 		final StubNotEquals stub2 = new StubNotEquals(stub1.getFoo());
 
@@ -118,7 +118,7 @@ public class MapContextTest {
 	public void test_DistributedContext_OverriddenEquals() throws Exception {
 		// Arrange
 		final String id = "foo";
-		final IDataGrid grid = DataGridFactory.getGrid();
+		final IDataGrid grid = DataGridFactory.makeDefaultDataGrid();
 		final StubEquals stub1 = new StubEquals(id);
 		final StubEquals stub2 = new StubEquals(stub1.getFoo());
 

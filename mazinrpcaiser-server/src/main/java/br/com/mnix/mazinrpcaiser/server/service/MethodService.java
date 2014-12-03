@@ -32,7 +32,9 @@ public class MethodService extends DefaultService<MethodRequest> {
 		Method method = obj.getClass().getDeclaredMethod(request.getMethodName(), argsClasses);
 
 		try {
-			return (Serializable) method.invoke(obj, (Object[]) args);
+			Object processed = method.invoke(obj, (Object[]) args);
+			context.putObject(request.getObjectId(), obj);
+			return (Serializable) processed;
 		} catch (InvocationTargetException e) {
 			throw e.getCause();
 		}

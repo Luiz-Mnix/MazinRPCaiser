@@ -12,7 +12,7 @@ public class DefaultServiceTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testProcessAction_wrongData() throws Throwable {
 		// Arrange
-		final IDataGrid datagrid = DataGridFactory.getGrid();
+		final IDataGrid datagrid = DataGridFactory.makeDefaultDataGrid();
 		final DefaultService handler = new OpenSessionService();
 		final Serializable data = new CloseSessionRequest(true);
 		final String topicId = "topic";

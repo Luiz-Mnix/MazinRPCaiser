@@ -3,6 +3,7 @@ package br.com.mnix.mazinrpcaiser.client;
 import br.com.mnix.mazinrpcaiser.client.proxy.DistributedProxyFactory;
 import br.com.mnix.mazinrpcaiser.client.proxy.IProxyFactory;
 import br.com.mnix.mazinrpcaiser.client.web.*;
+import br.com.mnix.mazinrpcaiser.common.MazinRPCaiserConstants;
 import br.com.mnix.mazinrpcaiser.common.SessionData;
 import br.com.mnix.mazinrpcaiser.common.request.CloseSessionRequest;
 import br.com.mnix.mazinrpcaiser.common.request.OpenSessionRequest;
@@ -64,6 +65,10 @@ public final class Session {
 
 	public Session(@Nonnull String serverAddress) {
 		this(UUID.randomUUID().toString(), serverAddress);
+	}
+
+	public Session() {
+		this(UUID.randomUUID().toString(), MazinRPCaiserConstants.DEFAULT_SERVER_ADDRESS);
 	}
 
 	public void open(boolean overwritesExisting)

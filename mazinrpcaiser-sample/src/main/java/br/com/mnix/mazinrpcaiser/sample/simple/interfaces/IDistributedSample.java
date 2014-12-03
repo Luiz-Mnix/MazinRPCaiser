@@ -1,6 +1,7 @@
-package br.com.mnix.mazinrpcaiser.sample.interfaces;
+package br.com.mnix.mazinrpcaiser.sample.simple.interfaces;
 
-import java.io.Serializable;
+import br.com.mnix.mazinrpcaiser.common.DistributedVersion;
+
 import java.util.List;
 import java.util.Map;
 
@@ -9,13 +10,14 @@ import java.util.Map;
  *
  * @author mnix05
  */
-public interface ISample extends Serializable {
+@DistributedVersion(of = ISample.class)
+public interface IDistributedSample {
 	int add(Integer n1, Integer n2);
 	String concat(String s1, String s2);
 	String concat(String s, Integer n);
 	int[] repeat(Integer n);
 	List<String> repeat(String s);
 	Map<String, Integer> repeat(String s, Integer n);
-	ISubSample createSubSample(String s);
+	IDistributedSubSample createSubSample(String s);
 	void throwException(Boolean throwz);
 }

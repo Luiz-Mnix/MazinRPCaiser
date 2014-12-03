@@ -1,4 +1,4 @@
-package br.com.mnix.mazinrpcaiser.sample.interfaces;
+package br.com.mnix.mazinrpcaiser.sample.simple.interfaces;
 
 import br.com.mnix.mazinrpcaiser.common.DistributedVersion;
 
