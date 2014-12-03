@@ -58,7 +58,7 @@ public class TaskReceiverTest {
 	@Test
 	public void testSetUpReceivers() throws Exception {
 		// Arrange
-		final IDataGrid grid = DataGridFactory.getGrid();
+		final IDataGrid grid = DataGridFactory.makeDefaultDataGrid();
 		final Reflections reflections = new Reflections(MazinRPCaiserConstants.DEFAULT_USER_PACKAGE);
 		final Set<Class<?>> requestsClasses = reflections.getTypesAnnotatedWith(Request.class);
 		final Collection<String> requestsClassesNames = Collections2.transform(requestsClasses,
@@ -104,7 +104,7 @@ public class TaskReceiverTest {
 	@Test(expected = RequestHasNoServiceException.class)
 	public void testSetUpReceiver_ReceiverNotFound() throws Exception {
 		// Arrange
-		final IDataGrid grid = DataGridFactory.getGrid();
+		final IDataGrid grid = DataGridFactory.makeDefaultDataGrid();
 		final Class<? extends Serializable> requestClass = StubRequest.class;
 
 		// Act & Assert
@@ -117,7 +117,7 @@ public class TaskReceiverTest {
 	@Test
 	public void testSetUpReceiver_ReceiverFound() throws Exception {
 		// Arrange
-		final IDataGrid grid = DataGridFactory.getGrid();
+		final IDataGrid grid = DataGridFactory.makeDefaultDataGrid();
 		final Class<? extends Serializable> requestClass = MethodRequest.class;
 
 		// Act
@@ -157,7 +157,7 @@ public class TaskReceiverTest {
 	@Test
 	public void test_Receiving_ShouldReturnFoo() throws Exception {
 		// Arrange
-		final IDataGrid grid = DataGridFactory.getGrid();
+		final IDataGrid grid = DataGridFactory.makeDefaultDataGrid();
 		final String topicId = UUID.randomUUID().toString();
 		final Stub2Request request1 = new Stub2Request(666);
 		final SessionData session = new SessionData("", "127.0.0.1");
@@ -189,7 +189,7 @@ public class TaskReceiverTest {
 	@Test
 	public void test_Receiving_ShouldReturnException() throws Exception {
 		// Arrange
-		final IDataGrid grid = DataGridFactory.getGrid();
+		final IDataGrid grid = DataGridFactory.makeDefaultDataGrid();
 		final String topicId = UUID.randomUUID().toString();
 		final Stub2Request request1 = new Stub2Request(0);
 		final SessionData session = new SessionData("", "127.0.0.1");

@@ -21,7 +21,7 @@ public class ServerObjectEncoderTest {
 	public void testTranslate_DistributedContext() throws Exception {
 		// Arrange
 		final String id = "foo";
-		final IDataGrid grid = DataGridFactory.getGrid();
+		final IDataGrid grid = DataGridFactory.makeDefaultDataGrid();
 		final StubEquals stub1 = new StubEquals(id);
 
 		// Act

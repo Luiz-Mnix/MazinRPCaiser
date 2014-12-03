@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 public class CloseSessionServiceTest {
 	@Test
 	public void testProcessAction_WipesContext() throws Throwable {
-		final IDataGrid dataGrid = DataGridFactory.getGrid();
+		final IDataGrid dataGrid = DataGridFactory.makeDefaultDataGrid();
 		final CloseSessionService handler = new CloseSessionService();
 		final String contextId = "context";
 		final String topicId = "topic";
@@ -34,7 +34,7 @@ public class CloseSessionServiceTest {
 
 	@Test
 	public void testProcessAction_DoesntWipeContext() throws Throwable {
-		final IDataGrid dataGrid = DataGridFactory.getGrid();
+		final IDataGrid dataGrid = DataGridFactory.makeDefaultDataGrid();
 		final CloseSessionService handler = new CloseSessionService();
 		final String contextId = "context3";
 		final String topicId = "topic";

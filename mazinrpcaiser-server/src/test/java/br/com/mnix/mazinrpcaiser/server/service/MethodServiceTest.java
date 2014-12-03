@@ -16,13 +16,13 @@ public class MethodServiceTest {
 	@Test
 	public void testProcessAction_CorrectMethod() throws Throwable {
 		// Arrange
-		final IDataGrid datagrid = DataGridFactory.getGrid();
+		final IDataGrid datagrid = DataGridFactory.makeDefaultDataGrid();
 		final MethodService handler = new MethodService();
 		final String objectId = "obj";
 		final MethodRequest data = new MethodRequest(objectId, "foo", 1);
 		final String topicId = "topic";
 		final String contextId = "context1";
-		final SessionData session = new SessionData(contextId, "127.0.0.1");
+		final SessionData session = new SessionData(contextId, MazinRPCaiserConstants.DEFAULT_SERVER_ADDRESS);
 		final RequestEnvelope action = new RequestEnvelope(topicId, session, data);
 		final DefaultStubStub obj = new DefaultStubStub();
 
@@ -40,13 +40,13 @@ public class MethodServiceTest {
 	@Test(expected = NotImplementedException.class)
 	public void testProcessAction_MethodException() throws Throwable {
 		// Arrange
-		final IDataGrid datagrid = DataGridFactory.getGrid();
+		final IDataGrid datagrid = DataGridFactory.makeDefaultDataGrid();
 		final MethodService handler = new MethodService();
 		final String objectId = "obj";
 		final MethodRequest data = new MethodRequest(objectId, "throwException");
 		final String topicId = "topic";
 		final String contextId = "context1";
-		final SessionData session = new SessionData(contextId, "127.0.0.1");
+		final SessionData session = new SessionData(contextId, MazinRPCaiserConstants.DEFAULT_SERVER_ADDRESS);
 		final RequestEnvelope action = new RequestEnvelope(topicId, session, data);
 		final DefaultStubStub obj = new DefaultStubStub();
 
@@ -60,13 +60,13 @@ public class MethodServiceTest {
 	@Test(expected = NoSuchMethodException.class)
 	public void testProcessAction_PrimitiveArgs() throws Throwable {
 		// Arrange
-		final IDataGrid datagrid = DataGridFactory.getGrid();
+		final IDataGrid datagrid = DataGridFactory.makeDefaultDataGrid();
 		final MethodService handler = new MethodService();
 		final String objectId = "obj";
 		final MethodRequest data = new MethodRequest(objectId, "primitiveArgMethod", 1);
 		final String topicId = "topic";
 		final String contextId = "context1";
-		final SessionData session = new SessionData(contextId, "127.0.0.1");
+		final SessionData session = new SessionData(contextId, MazinRPCaiserConstants.DEFAULT_SERVER_ADDRESS);
 		final RequestEnvelope action = new RequestEnvelope(topicId, session, data);
 		final DefaultStubStub obj = new DefaultStubStub();
 
@@ -75,28 +75,31 @@ public class MethodServiceTest {
 		datagrid.retrieveContext(contextId, true).putObject(objectId, obj);
 		handler.processRequest(action, datagrid);
 	}
-
+	
 	@Test
-	public void testProcessAction_WrapperArgs_PrimitiveReturn() throws Throwable {
+	public void testProcessAction_KeepState_WrapperArgs_PrimitiveReturn() throws Throwable {
 		// Arrange
-		final IDataGrid datagrid = DataGridFactory.getGrid();
+		final IDataGrid datagrid = DataGridFactory.makeDefaultDataGrid();
 		final MethodService handler = new MethodService();
 		final String objectId = "obj";
-		final float value = 1.f;
-		final MethodRequest data = new MethodRequest(objectId, "wrapperArgMethod", value);
+		final int value = 1;
+		final MethodRequest requestSet = new MethodRequest(objectId, "foo", value);
+		final MethodRequest requestGet = new MethodRequest(objectId, "getFoo");
 		final String topicId = "topic";
 		final String contextId = "context1";
-		final SessionData session = new SessionData(contextId, "127.0.0.1");
-		final RequestEnvelope action = new RequestEnvelope(topicId, session, data);
+		final SessionData session = new SessionData(contextId, MazinRPCaiserConstants.DEFAULT_SERVER_ADDRESS);
+		final RequestEnvelope reqEnvSet = new RequestEnvelope(topicId, session, requestSet);
+		final RequestEnvelope reqEnvGet = new RequestEnvelope(topicId, session, requestGet);
 		final DefaultStubStub obj = new DefaultStubStub();
 
 		// Act
 		datagrid.raise();
 		datagrid.retrieveContext(contextId, true).putObject(objectId, obj);
-		final float returnedData = (float) handler.processRequest(action, datagrid);
+		handler.processRequest(reqEnvSet, datagrid);
+		final int returnedData = (int) handler.processRequest(reqEnvGet, datagrid);
 
 		// Assert
-		assertEquals(value, returnedData, 0);
+		assertEquals(value, returnedData);
 
 		datagrid.shutdown();
 	}
@@ -104,6 +107,7 @@ public class MethodServiceTest {
 	// DEFAULT IMPLEMENTATION STUB
 	private interface IDefaultStub extends Serializable {
 		String foo(Integer bar);
+		int getFoo();
 		void throwException() throws NotImplementedException;
 		void primitiveArgMethod(int i);
 		float wrapperArgMethod(Float a);
@@ -111,10 +115,18 @@ public class MethodServiceTest {
 	@DefaultImplementation
 	public static class DefaultStubStub implements IDefaultStub {
 		private static final long serialVersionUID = -3487216679364641238L;
+		
+		private int mBar = 0;
 
 		@Override
 		public String foo(Integer bar) {
+			mBar = bar;
 			return (bar * 3) + "_foo";
+		}
+
+		@Override
+		public int getFoo() {
+			return mBar;
 		}
 
 		@Override

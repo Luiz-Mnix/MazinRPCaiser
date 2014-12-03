@@ -5,6 +5,7 @@ import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.ITopic;
 import com.hazelcast.core.MessageListener;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,7 +40,13 @@ public class DataGridClient implements IDataGridClient {
 	public void connect() throws DataGridUnavailableException {
 		if(!isConnected()) {
 			ClientConfig clientConfig = new ClientConfig();
-			clientConfig.getNetworkConfig().addAddress(mClusterAddress);
+
+			String[] components = StringUtils.split(mClusterAddress, ':');
+
+			if(components.length == 1) {
+
+				clientConfig.getNetworkConfig().addAddress(mClusterAddress);
+			}
 			try {
 				mHazelcastConnection = HazelcastClient.newHazelcastClient(clientConfig);
 			} catch(IllegalStateException e) {

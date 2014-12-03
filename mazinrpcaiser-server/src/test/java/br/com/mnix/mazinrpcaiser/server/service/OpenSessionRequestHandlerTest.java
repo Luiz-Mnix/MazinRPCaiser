@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 public class OpenSessionRequestHandlerTest {
 	@Test
 	public void testProcessAction() throws Throwable {
-		final IDataGrid dataGrid = DataGridFactory.getGrid();
+		final IDataGrid dataGrid = DataGridFactory.makeDefaultDataGrid();
 		final OpenSessionService handler = new OpenSessionService();
 		final String contextId = "context";
 		final String topicId = "topic";

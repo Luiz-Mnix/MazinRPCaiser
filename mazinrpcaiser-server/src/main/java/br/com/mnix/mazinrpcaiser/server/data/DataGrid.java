@@ -19,9 +19,19 @@ import java.util.concurrent.BlockingQueue;
  */
 public class DataGrid implements IDataGrid {
 	@Nullable
-	private static HazelcastInstance sHazelcastConnection = null;
+	private HazelcastInstance mHazelcastConnection = null;
+
+	@Nonnull private final String mNetworkInterface;
+	@Nonnull public String getNetworkInterface() {
+		return mNetworkInterface;
+	}
+
+	public DataGrid(@Nonnull String networkInterface) {
+		mNetworkInterface = networkInterface;
+	}
 
 	public DataGrid() {
+		this(DataGridFactory.DEFAULT_NETWORK_INTERFACE);
 	}
 
 	private void checkIfIsOn() {
@@ -32,15 +42,15 @@ public class DataGrid implements IDataGrid {
 
 	@Override
 	public boolean isOn() {
-		return sHazelcastConnection != null;
+		return mHazelcastConnection != null;
 	}
 
 	@Override
 	public void raise() {
 		if(!isOn()) {
 			Config config = new Config();
-			config.getNetworkConfig().getInterfaces().addInterface("127.0.0.1");
-			sHazelcastConnection = Hazelcast.newHazelcastInstance(config);
+			config.getNetworkConfig().getInterfaces().addInterface(mNetworkInterface);
+			mHazelcastConnection = Hazelcast.newHazelcastInstance(config);
 		}
 	}
 
@@ -48,8 +58,8 @@ public class DataGrid implements IDataGrid {
 	@Override
 	public void shutdown() {
 		if(isOn()) {
-			sHazelcastConnection.shutdown();
-			sHazelcastConnection = null;
+			mHazelcastConnection.shutdown();
+			mHazelcastConnection = null;
 		}
 	}
 
@@ -58,7 +68,7 @@ public class DataGrid implements IDataGrid {
 	@Override
 	public IContext retrieveContext(@Nonnull String contextId, boolean overwrites) {
 		checkIfIsOn();
-		Map<String, Serializable> context = sHazelcastConnection.getMap(contextId);
+		Map<String, Serializable> context = mHazelcastConnection.getMap(contextId);
 
 		if(overwrites) {
 			context.clear();
@@ -71,7 +81,7 @@ public class DataGrid implements IDataGrid {
 	@Override
 	public void deleteContext(@Nonnull String contextId) {
 		checkIfIsOn();
-		sHazelcastConnection.getMap(contextId).clear();
+		mHazelcastConnection.getMap(contextId).clear();
 	}
 
 	@SuppressWarnings("ConstantConditions")
@@ -79,14 +89,14 @@ public class DataGrid implements IDataGrid {
 	@Override
 	public <T> BlockingQueue<T> getCommandQueue(@Nonnull String commandName) {
 		checkIfIsOn();
-		return sHazelcastConnection.getQueue(commandName);
+		return mHazelcastConnection.getQueue(commandName);
 	}
 
 	@SuppressWarnings("ConstantConditions")
 	@Override
 	public <T extends Serializable> void postNotification(String topicId, T data) {
 		checkIfIsOn();
-		ITopic<T> topic = sHazelcastConnection.getTopic(topicId);
+		ITopic<T> topic = mHazelcastConnection.getTopic(topicId);
 		topic.publish(data);
 	}
 
@@ -95,7 +105,7 @@ public class DataGrid implements IDataGrid {
 	@Override
 	public <T> String addListener(@Nonnull String topicId, @Nonnull MessageListener<T> listener) {
 		checkIfIsOn();
-		ITopic<T> topic = sHazelcastConnection.getTopic(topicId);
+		ITopic<T> topic = mHazelcastConnection.getTopic(topicId);
 		return topic.addMessageListener(listener);
 	}
 
@@ -103,7 +113,7 @@ public class DataGrid implements IDataGrid {
 	@Override
 	public void removeListener(@Nonnull String topicId, @Nonnull String listenerId) {
 		checkIfIsOn();
-		ITopic topic = sHazelcastConnection.getTopic(topicId);
+		ITopic topic = mHazelcastConnection.getTopic(topicId);
 		topic.removeMessageListener(listenerId);
 	}
 }
