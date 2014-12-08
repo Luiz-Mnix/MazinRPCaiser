@@ -24,14 +24,11 @@ public final class ClientDataTranslator {
 			return null;
 		}
 
+		ClientObjectEncoder fallback = new ClientObjectEncoder(proxyFactory);
 		Serializable[] translatedArgs = new Serializable[args.length];
 
 		for (int idx = 0; idx < args.length; ++idx) {
-			if(args[idx] instanceof Serializable) {
-				translatedArgs[idx] = (Serializable) translateData(args[idx], new ClientObjectEncoder(proxyFactory));
-			} else {
-				throw new TranslationException("Cannot encode un-serializable data to the server!");
-			}
+			translatedArgs[idx] = (Serializable) translateData(args[idx], fallback);
 		}
 		return translatedArgs;
 	}

@@ -40,7 +40,7 @@ public class ClientDataTranslatorTest {
 	public void testEncodeToServer_SomeArgs() throws Throwable {
 		// Arrange
 		final IProxyFactory factory = new StubProxyFactory1();
-		final Object[] data = { DEFAULT_ID, new IStub() {} };
+		final Object[] data = { DEFAULT_ID, new IDistributedStub() {} };
 
 		// Act
 		Object[] translated = (Object[]) ClientDataTranslator.encodeToServer(data, factory);
@@ -50,16 +50,6 @@ public class ClientDataTranslatorTest {
 		assertEquals(DEFAULT_ID, translated[0]);
 		assertTrue(translated[1] instanceof ProxiedObject);
 		assertEquals(DEFAULT_ID, ((ProxiedObject) translated[1]).getObjectId());
-	}
-
-	@Test(expected = TranslationException.class)
-	public void testEncodeToServer_UnknownData() throws Throwable {
-		// Arrange
-		final IProxyFactory factory = new StubProxyFactory1();
-		final Object[] data = { factory };
-
-		// Act & Assert
-		ClientDataTranslator.encodeToServer(data, factory);
 	}
 
 	@Test
@@ -128,7 +118,7 @@ public class ClientDataTranslatorTest {
 					return DEFAULT_ID;
 				}
 				@Nonnull @Override public Class<?> getBaseInterface() {
-					return DEFAULT_ID.getClass();
+					return IDistributedStub.class;
 				}
 				@Override public Object invoke(Object o, Method method, Method method2, Object[] objects) throws Throwable {
 					throw new UnsupportedOperationException();

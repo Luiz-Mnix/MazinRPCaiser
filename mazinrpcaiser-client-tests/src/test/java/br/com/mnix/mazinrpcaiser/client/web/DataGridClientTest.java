@@ -3,6 +3,7 @@ import br.com.mnix.mazinrpcaiser.client.HazelcastUtils;
 import br.com.mnix.mazinrpcaiser.client.web.DataGridClient;
 import br.com.mnix.mazinrpcaiser.client.web.DataGridUnavailableException;
 import br.com.mnix.mazinrpcaiser.client.web.IDataGridClient;
+import br.com.mnix.mazinrpcaiser.common.MazinRPCaiserConstants;
 import com.hazelcast.core.Message;
 import com.hazelcast.core.MessageListener;
 import org.junit.*;
@@ -52,10 +53,8 @@ public class DataGridClientTest implements MessageListener {
 		final String clusterAddress = "1272.0.0.1";
 		final IDataGridClient client = new DataGridClient(clusterAddress);
 
-		// Act
+		// Act & Assert
 		client.connect();
-
-		// Assert
 	}
 
 	@Test
@@ -64,13 +63,13 @@ public class DataGridClientTest implements MessageListener {
 		final String clusterAddress = "127.0.0.1";
 		final IDataGridClient client = new DataGridClient(clusterAddress);
 		final Semaphore semaphore = new Semaphore(0);
-		final String queueId = "queue";
+		final String queueId = MazinRPCaiserConstants.COMMAND_QUEUE_ID;
 		final String[] data = new String[1];
 		final Runnable responder = new Runnable() {
 			@Override
 			public void run() {
 				try {
-					BlockingQueue<String> a =HazelcastUtils.getQueue(queueId);
+					BlockingQueue<String> a = HazelcastUtils.getQueue(queueId);
 					data[0] = a.take();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -82,7 +81,7 @@ public class DataGridClientTest implements MessageListener {
 		// Act
 		client.connect();
 		new Thread(responder).start();
-		client.sendData(queueId, "foo");
+		client.sendData("foo");
 		semaphore.acquire();
 
 		// Assert

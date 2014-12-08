@@ -62,7 +62,7 @@ public final class DataTranslator {
 				throw new TranslatorNotFoundException(data.getClass());
 			} else {
 				translator = fallback;
-				trueFallback = fallback;
+				trueFallback = null;
 			}
 		} else {
 			trueFallback = fallback;

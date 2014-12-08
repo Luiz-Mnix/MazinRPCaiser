@@ -6,7 +6,6 @@ import br.com.mnix.mazinrpcaiser.common.MazinRPCaiserConstants;
 import br.com.mnix.mazinrpcaiser.server.TaskReceiver;
 import br.com.mnix.mazinrpcaiser.server.data.DataGridFactory;
 import br.com.mnix.mazinrpcaiser.server.data.IDataGrid;
-import com.hazelcast.core.Hazelcast;
 import org.apache.commons.lang3.Validate;
 
 /**
@@ -22,15 +21,15 @@ public final class DistributedApp {
 	public static void main (String[] args) throws Exception {
 		IDataGrid grid1 = DataGridFactory.makeDefaultDataGrid();
 		grid1.raise();
-		TaskReceiver.setUpReceivers(grid1);
+		TaskReceiver.setUpTaskReceiver(grid1);
 
 		IDataGrid grid2 = DataGridFactory.makeDataGrid(MazinRPCaiserConstants.DEFAULT_SERVER_ADDRESS + ":5702");
 		grid2.raise();
-		TaskReceiver.setUpReceivers(grid2);
+		TaskReceiver.setUpTaskReceiver(grid2);
 
 		IDataGrid grid3 = DataGridFactory.makeDataGrid(MazinRPCaiserConstants.DEFAULT_SERVER_ADDRESS + ":5703");
 		grid3.raise();
-		TaskReceiver.setUpReceivers(grid3);
+		TaskReceiver.setUpTaskReceiver(grid3);
 
 		Session session1 = new Session(SESSION_ID, MazinRPCaiserConstants.DEFAULT_SERVER_ADDRESS);
 		Session session2 = new Session(SESSION_ID, MazinRPCaiserConstants.DEFAULT_SERVER_ADDRESS + ":5702");

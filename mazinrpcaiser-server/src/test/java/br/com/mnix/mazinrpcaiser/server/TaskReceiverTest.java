@@ -4,250 +4,151 @@ import br.com.mnix.mazinrpcaiser.common.MazinRPCaiserConstants;
 import br.com.mnix.mazinrpcaiser.common.RequestEnvelope;
 import br.com.mnix.mazinrpcaiser.common.ResponseEnvelope;
 import br.com.mnix.mazinrpcaiser.common.SessionData;
-import br.com.mnix.mazinrpcaiser.common.request.MethodRequest;
-import br.com.mnix.mazinrpcaiser.common.request.Request;
-import br.com.mnix.mazinrpcaiser.common.request.RequestUtils;
 import br.com.mnix.mazinrpcaiser.server.data.DataGridFactory;
 import br.com.mnix.mazinrpcaiser.server.data.IDataGrid;
 import br.com.mnix.mazinrpcaiser.server.service.IService;
-import br.com.mnix.mazinrpcaiser.server.service.RequestHasNoServiceException;
 import br.com.mnix.mazinrpcaiser.server.service.Service;
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import com.hazelcast.core.Message;
 import com.hazelcast.core.MessageListener;
-import org.junit.After;
-import org.junit.Assert;
 import org.junit.Test;
-import org.reflections.Reflections;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.Semaphore;
 
-@SuppressWarnings({"MagicNumber", "ConstantConditions", "ThrowableResultOfMethodCallIgnored"})
+import static org.junit.Assert.*;
+
+@SuppressWarnings("ThrowableResultOfMethodCallIgnored")
 public class TaskReceiverTest {
-
-	@SuppressWarnings("deprecation")
-	@After
-	public void after() throws Exception {
-		ThreadGroup masterGroup = Thread.currentThread().getThreadGroup();
-		while(masterGroup != null && masterGroup.getParent() != null) {
-			masterGroup = masterGroup.getParent();
-		}
-		assert masterGroup != null;
-
-		Thread[] threads = new Thread[masterGroup.activeCount()];
-		masterGroup.enumerate(threads);
-		for (Thread thread : threads) {
-			if(thread.getName().contains("_receiver")) {
-				thread.stop();
-			}
-		}
-
-		Field field = TaskReceiver.class.getDeclaredField("sRunningReceivers"); //NoSuchFieldException
-		field.setAccessible(true);
-		Map map = (Map) field.get(null);
-		map.clear();
-	}
-
+	@SuppressWarnings("unchecked")
 	@Test
-	public void testSetUpReceivers() throws Exception {
+	public void testSetUpReceivers() throws Throwable{
 		// Arrange
-		final IDataGrid grid = DataGridFactory.makeDefaultDataGrid();
-		final Reflections reflections = new Reflections(MazinRPCaiserConstants.DEFAULT_USER_PACKAGE);
-		final Set<Class<?>> requestsClasses = reflections.getTypesAnnotatedWith(Request.class);
-		final Collection<String> requestsClassesNames = Collections2.transform(requestsClasses,
-				new Function<Class<?>, String>() {
-					@Nullable
-					@Override
-					public String apply(@Nullable Class<?> aClass) {
-						//noinspection unchecked,ConstantConditions
-						return TaskReceiver.getReceiverName((Class<? extends Serializable>) aClass);
-					}
-				});
+		final IDataGrid grid1 = DataGridFactory.makeDefaultDataGrid();
+		final IDataGrid grid2 = DataGridFactory.makeDataGrid(MazinRPCaiserConstants.DEFAULT_SERVER_ADDRESS + ":5702");
+		final Field receiversField = TaskReceiver.class.getDeclaredField("sRunningReceivers");
+		receiversField.setAccessible(true);
+		final Map<Integer, TaskReceiver> receivers = (Map<Integer, TaskReceiver>) receiversField.get(null);
 
 		// Act
-		grid.raise();
-		grid.getCommandQueue("asd");
-		TaskReceiver.setUpReceivers(grid);
-
-		ThreadGroup masterGroup = Thread.currentThread().getThreadGroup();
-		while(masterGroup != null && masterGroup.getParent() != null) {
-			masterGroup = masterGroup.getParent();
-		}
-		assert masterGroup != null;
-
-		Set<String> requestsThreadsNames = new HashSet<>();
-		Thread[] threads = new Thread[masterGroup.activeCount()];
-		masterGroup.enumerate(threads);
-		for (Thread thread : threads) {
-			if(thread.getName().contains("_receiver")) {
-				requestsThreadsNames.add(thread.getName());
-			}
-		}
+		grid1.raise();
+		grid2.raise();
+		final TaskReceiver receiver1 = TaskReceiver.setUpTaskReceiver(grid1);
+		final TaskReceiver receiver1Clone = TaskReceiver.setUpTaskReceiver(grid1);
+		final TaskReceiver receiver2 = TaskReceiver.setUpTaskReceiver(grid2);
+		final Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
 
 		// Assert
-		Assert.assertTrue(requestsThreadsNames.size() <= requestsClasses.size());
-		Assert.assertTrue(requestsThreadsNames.size() >= 4);
-		for (String requestsThreadsName : requestsThreadsNames) {
-			Assert.assertTrue(requestsClassesNames.contains(requestsThreadsName));
+		boolean found1 = false;
+		boolean found2 = false;
+		for (Thread thread : threadSet) {
+			if(thread.getName().equals(receiver1.getThreadName())) {
+				found1 = true;
+			}
+			if(thread.getName().equals(receiver2.getThreadName())) {
+				found2 = true;
+			}
 		}
+		assertTrue(found1);
+		assertTrue(found2);
 
-		grid.shutdown();
+		assertEquals(2, receivers.size());
+		assertSame(receiver1, receiver1Clone);
+		assertSame(receiver1, receivers.get(grid1.hashCode()));
+		assertSame(receiver2, receivers.get(grid2.hashCode()));
+
+		receiver1.finish();
+		grid2.shutdown();
+
+		assertEquals(0, receivers.size());
+
+		grid1.shutdown();
 	}
 
-	@Test(expected = RequestHasNoServiceException.class)
-	public void testSetUpReceiver_ReceiverNotFound() throws Exception {
+	@Test(expected = IllegalStateException.class)
+	public void testStart_AlreadyStarted() throws Throwable {
 		// Arrange
-		final IDataGrid grid = DataGridFactory.makeDefaultDataGrid();
-		final Class<? extends Serializable> requestClass = StubRequest.class;
-
-		// Act & Assert
-		grid.raise();
-		TaskReceiver.setUpReceiver(requestClass, grid);
-
-		grid.shutdown();
-	}
-
-	@Test
-	public void testSetUpReceiver_ReceiverFound() throws Exception {
-		// Arrange
-		final IDataGrid grid = DataGridFactory.makeDefaultDataGrid();
-		final Class<? extends Serializable> requestClass = MethodRequest.class;
+		final IDataGrid grid1 = DataGridFactory.makeDefaultDataGrid();
 
 		// Act
-		grid.raise();
-		TaskReceiver.setUpReceiver(requestClass, grid);
-		ThreadGroup masterGroup = Thread.currentThread().getThreadGroup();
-		while(masterGroup != null && masterGroup.getParent() != null) {
-			masterGroup = masterGroup.getParent();
-		}
-
-		assert masterGroup != null;
-		int count = masterGroup.activeCount();
-		Thread[] threads = new Thread[count];
-		masterGroup.enumerate(threads);
+		grid1.raise();
+		final TaskReceiver receiver1 = TaskReceiver.setUpTaskReceiver(grid1);
 
 		// Assert
-		boolean found = false;
-		for (Thread thread : threads) {
-			if(thread.getName().equals(TaskReceiver.getReceiverName(requestClass))) {
-				found = true;
-				break;
-			}
+		try {
+			receiver1.start();
+		} finally {
+			grid1.shutdown();
 		}
-		Assert.assertTrue(found);
-
-		TaskReceiver.setUpReceiver(requestClass, grid);
-		ThreadGroup newMasterGroup = Thread.currentThread().getThreadGroup();
-		while(newMasterGroup != null && newMasterGroup.getParent() != null) {
-			newMasterGroup = newMasterGroup.getParent();
-		}
-		assert newMasterGroup != null;
-		Assert.assertEquals(count, newMasterGroup.activeCount());
-
-		grid.shutdown();
 	}
 
-	@Test
-	public void test_Receiving_ShouldReturnFoo() throws Exception {
+	@Test(expected = IllegalStateException.class)
+	public void testFinish_AlreadyFinish() throws Throwable {
 		// Arrange
-		final IDataGrid grid = DataGridFactory.makeDefaultDataGrid();
-		final String topicId = UUID.randomUUID().toString();
-		final Stub2Request request1 = new Stub2Request(666);
-		final SessionData session = new SessionData("", "127.0.0.1");
-		final RequestEnvelope requestEnvelope = new RequestEnvelope(topicId, session, request1);
+		final IDataGrid grid1 = DataGridFactory.makeDefaultDataGrid();
+
+		// Act
+		grid1.raise();
+		final TaskReceiver receiver1 = TaskReceiver.setUpTaskReceiver(grid1);
+		grid1.shutdown();
+
+		// Assert
+		try {
+			receiver1.finish();
+		} finally {
+			grid1.shutdown();
+		}
+	}
+
+	@Test(expected = RejectedExecutionException.class)
+	public void testRun_Overflow() throws Throwable {
+		// Arrange
+		final IDataGrid grid1 = DataGridFactory.makeDefaultDataGrid();
+		final int threads = 1;
+		final String topic1 = "topic666";
+		final SessionData session1 = new SessionData(topic1, MazinRPCaiserConstants.DEFAULT_SERVER_ADDRESS);
+		final Throwable[] exception = new Exception[1];
 		final Semaphore semaphore = new Semaphore(0);
-		final ResponseEnvelope[] responseEnvelope = new ResponseEnvelope[1];
-		final MessageListener liberator = new MessageListener() {
-			@Override
-			public void onMessage(Message message) {
-				responseEnvelope[0] = (ResponseEnvelope) message.getMessageObject();
+		final RequestEnvelope req1 = new RequestEnvelope(topic1, session1, new StubRequest());
+		final MessageListener<ResponseEnvelope> waiter = new MessageListener<ResponseEnvelope>() {
+			@SuppressWarnings("ConstantConditions")
+			@Override public void onMessage(Message message) {
+				try {
+					exception[0] = ((ResponseEnvelope)message.getMessageObject()).getException().getCause();
+				} catch(Exception ignored) {}
 				semaphore.release();
 			}
 		};
 
 		// Act
-		grid.raise();
-		grid.addListener(topicId, liberator);
-		TaskReceiver.setUpReceiver(Stub2Request.class, grid);
-		BlockingQueue<RequestEnvelope> requestQueue = grid.getCommandQueue(RequestUtils.getRequestGroup(request1));
-		requestQueue.add(requestEnvelope);
+		grid1.raise();
+		grid1.addListener(topic1, waiter);
+		TaskReceiver.setUpTaskReceiver(grid1, threads, threads);
+		final BlockingQueue<RequestEnvelope> commandQueue = grid1.getCommandQueue(MazinRPCaiserConstants.COMMAND_QUEUE_ID);
+		for(int idx = threads * 2; idx >= 0; --idx) {
+			commandQueue.put(req1);
+		}
 		semaphore.acquire();
+		grid1.shutdown();
 
 		// Assert
-		Assert.assertNull(responseEnvelope[0].getException());
-		Assert.assertEquals("foo666", responseEnvelope[0].getResponse());
-		grid.shutdown();
+		throw exception[0];
 	}
 
-	@Test
-	public void test_Receiving_ShouldReturnException() throws Exception {
-		// Arrange
-		final IDataGrid grid = DataGridFactory.makeDefaultDataGrid();
-		final String topicId = UUID.randomUUID().toString();
-		final Stub2Request request1 = new Stub2Request(0);
-		final SessionData session = new SessionData("", "127.0.0.1");
-		final RequestEnvelope requestEnvelope = new RequestEnvelope(topicId, session, request1);
-		final Semaphore semaphore = new Semaphore(0);
-		final ResponseEnvelope[] responseEnvelope = new ResponseEnvelope[1];
-		final MessageListener liberator = new MessageListener() {
-			@Override
-			public void onMessage(Message message) {
-				responseEnvelope[0] = (ResponseEnvelope) message.getMessageObject();
-				semaphore.release();
-			}
-		};
-
-		// Act
-		grid.raise();
-		grid.addListener(topicId, liberator);
-		TaskReceiver.setUpReceiver(Stub2Request.class, grid);
-		BlockingQueue<RequestEnvelope> requestQueue = grid.getCommandQueue(RequestUtils.getRequestGroup(request1));
-		requestQueue.add(requestEnvelope);
-		semaphore.acquire();
-
-		// Assert
-		Assert.assertNotNull(responseEnvelope[0].getException());
-		Assert.assertTrue(responseEnvelope[0].getException().getCause() instanceof IllegalArgumentException);
-		Assert.assertNull(responseEnvelope[0].getResponse());
-		grid.shutdown();
-	}
-
-	@Request
-	public static class StubRequest implements Serializable {
+	public static class StubRequest implements Serializable  {
 		private static final long serialVersionUID = -7831208085544258658L;
 	}
-
-	@Request
-	public static class Stub2Request implements Serializable {
-		private static final long serialVersionUID = 6171755309144019679L;
-		private final int mFoo;
-		public Stub2Request(int foo) {
-			mFoo = foo;
-		}
-		public int isFoo() {
-			return mFoo;
-		}
-	}
-
-	@Service(forRequest = Stub2Request.class)
-	public static class Stub2Service implements IService {
-		@Nullable
-		@Override
-		public Serializable processRequest(@Nonnull RequestEnvelope requestEnv, @Nonnull IDataGrid dataGrid)
-				throws Exception {
-			int foo = ((Stub2Request) requestEnv.getRequest()).isFoo();
-			if(foo == 0) {
-				throw new IllegalArgumentException();
-			}
-
-			return "foo"+foo;
+	@Service(forRequest = StubRequest.class) public static class StubService implements IService {
+		@Nullable @Override public Serializable processRequest(@Nonnull RequestEnvelope requestEnv,
+															   @Nonnull IDataGrid dataGrid) throws Throwable {
+			Thread.sleep(10 * 1000);
+			return null;
 		}
 	}
 }

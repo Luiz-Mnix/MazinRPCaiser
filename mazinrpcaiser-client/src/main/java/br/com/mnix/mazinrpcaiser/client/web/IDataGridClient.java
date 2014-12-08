@@ -15,7 +15,7 @@ public interface IDataGridClient {
 	boolean isConnected();
 	void connect() throws DataGridUnavailableException;
 	void disconnect();
-	<T extends Serializable> void sendData(@Nonnull String repoId, @Nonnull T data) throws InterruptedException;
+	<T extends Serializable> void sendData(@Nonnull T data) throws InterruptedException;
 	@Nonnull <T> String addListener(@Nonnull String topicId, @Nonnull MessageListener<T> listener);
 	void removeListener(@Nonnull String topicId, @Nonnull String listenerId);
 }

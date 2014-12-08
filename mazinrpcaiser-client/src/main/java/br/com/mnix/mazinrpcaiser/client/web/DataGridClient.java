@@ -1,5 +1,6 @@
 package br.com.mnix.mazinrpcaiser.client.web;
 
+import br.com.mnix.mazinrpcaiser.common.MazinRPCaiserConstants;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.core.HazelcastInstance;
@@ -66,9 +67,9 @@ public class DataGridClient implements IDataGridClient {
 
 	@SuppressWarnings("ConstantConditions")
 	@Override
-	public <T extends Serializable> void sendData(@Nonnull String repoId, @Nonnull T data) throws InterruptedException {
+	public <T extends Serializable> void sendData(@Nonnull T data) throws InterruptedException {
 		checkState();
-		BlockingQueue<T> queue = mHazelcastConnection.getQueue(repoId);
+		BlockingQueue<T> queue = mHazelcastConnection.getQueue(MazinRPCaiserConstants.COMMAND_QUEUE_ID);
 		queue.put(data);
 	}
 
