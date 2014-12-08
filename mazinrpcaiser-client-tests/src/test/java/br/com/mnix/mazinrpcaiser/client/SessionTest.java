@@ -1,9 +1,6 @@
 package br.com.mnix.mazinrpcaiser.client;
 
 import br.com.mnix.mazinrpcaiser.common.*;
-import br.com.mnix.mazinrpcaiser.common.request.CloseSessionRequest;
-import br.com.mnix.mazinrpcaiser.common.request.OpenSessionRequest;
-import br.com.mnix.mazinrpcaiser.common.request.RequestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +32,7 @@ public class SessionTest {
 		final Runnable openHandler = new Runnable() {
 			@Override
 			public void run() {
-				BlockingQueue queue = HazelcastUtils.getQueue(RequestUtils.getRequestGroup(OpenSessionRequest.class));
+				BlockingQueue queue = HazelcastUtils.getQueue(MazinRPCaiserConstants.COMMAND_QUEUE_ID);
 				try {
 					RequestEnvelope action = (RequestEnvelope) queue.take();
 					HazelcastUtils.postMessage(
@@ -50,7 +47,7 @@ public class SessionTest {
 		final Runnable closeHandler = new Runnable() {
 			@Override
 			public void run() {
-				BlockingQueue queue = HazelcastUtils.getQueue(RequestUtils.getRequestGroup(CloseSessionRequest.class));
+				BlockingQueue queue = HazelcastUtils.getQueue(MazinRPCaiserConstants.COMMAND_QUEUE_ID);
 				try {
 					RequestEnvelope action = (RequestEnvelope) queue.take();
 					HazelcastUtils.postMessage(

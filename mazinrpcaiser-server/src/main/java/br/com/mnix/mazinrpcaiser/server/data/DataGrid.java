@@ -22,9 +22,6 @@ public class DataGrid implements IDataGrid {
 	private HazelcastInstance mHazelcastConnection = null;
 
 	@Nonnull private final String mNetworkInterface;
-	@Nonnull public String getNetworkInterface() {
-		return mNetworkInterface;
-	}
 
 	public DataGrid(@Nonnull String networkInterface) {
 		mNetworkInterface = networkInterface;

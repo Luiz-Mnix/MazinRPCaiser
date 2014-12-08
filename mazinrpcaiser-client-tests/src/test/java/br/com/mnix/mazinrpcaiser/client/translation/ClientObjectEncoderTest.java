@@ -2,6 +2,7 @@ package br.com.mnix.mazinrpcaiser.client.translation;
 
 import br.com.mnix.mazinrpcaiser.client.proxy.IProxy;
 import br.com.mnix.mazinrpcaiser.client.proxy.IProxyFactory;
+import br.com.mnix.mazinrpcaiser.common.DistributedVersion;
 import br.com.mnix.mazinrpcaiser.common.ITransmissible;
 import br.com.mnix.mazinrpcaiser.common.ProxiedObject;
 import br.com.mnix.mazinrpcaiser.common.translation.TranslationException;
@@ -12,7 +13,7 @@ import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by mnix05 on 11/24/14.
@@ -21,7 +22,6 @@ import static org.junit.Assert.*;
  */
 public class ClientObjectEncoderTest {
 	private static final String FOUND_ID = "found";
-	private static final Class<?> FOUND_CLASS = ITransmissible.class;
 
 	@Test
 	public void testTranslate_foundObject() throws Exception {
@@ -30,11 +30,11 @@ public class ClientObjectEncoderTest {
 		final ClientObjectEncoder encoder = new ClientObjectEncoder(factory);
 
 		// Act
-		final Object translated = encoder.translate(FOUND_ID, null);
+		final Object translated = encoder.translate(new IDistributedStub(){}, null);
 		final ProxiedObject proxy = (ProxiedObject) translated;
 
 		// Assert
-		assertEquals(FOUND_CLASS, proxy.getObjectClass());
+		assertEquals(IDistributedStub.class, proxy.getObjectClass());
 		assertEquals(FOUND_ID, proxy.getObjectId());
 	}
 
@@ -60,7 +60,7 @@ public class ClientObjectEncoderTest {
 			return FOUND_ID;
 		}
 		@Nonnull @Override public Class<?> getBaseInterface() {
-			return FOUND_CLASS;
+			return IDistributedStub.class;
 		}
 		@Override public Object invoke(Object o, Method method, Method method2, Object[] objects) throws Throwable {
 			throw new UnsupportedOperationException();
@@ -75,11 +75,14 @@ public class ClientObjectEncoderTest {
 			throw new UnsupportedOperationException();
 		}
 		@Nonnull @Override public IProxy getProxyOfObject(@Nonnull Object obj) throws NotFoundException {
-			if(obj.equals(FOUND_ID)) {
+			if(obj instanceof IDistributedStub) {
 				return new MockProxy();
 			}
 
 			throw new NotFoundException("UR MOMMA SO FAT");
 		}
 	}
+
+	private interface IStub extends Serializable {}
+	@DistributedVersion(of = IStub.class)private interface IDistributedStub {}
 }

@@ -1,5 +1,6 @@
 package br.com.mnix.mazinrpcaiser.server.translation;
 
+import br.com.mnix.mazinrpcaiser.common.DistributedVersion;
 import br.com.mnix.mazinrpcaiser.common.ProxiedObject;
 import br.com.mnix.mazinrpcaiser.common.exception.ObjectNotFoundException;
 import br.com.mnix.mazinrpcaiser.common.translation.TranslationException;
@@ -16,16 +17,17 @@ public class ClientObjectDecoderTest {
 	public void testTranslate_FoundObject() throws Exception {
 		// Arrange
 		final String id = "foo";
+		final ISample sample = new DefaultSample();
 		final HashMap<String, Serializable> innerMap = new HashMap<>();
 		final MapContext context = new MapContext(id, innerMap);
 		final ClientObjectDecoder decoder = new ClientObjectDecoder(context);
-		final ProxiedObject obj = new ProxiedObject(id, String.class);
+		final ProxiedObject obj = new ProxiedObject(id, IDistributedSample.class);
 
 		// Act
-		innerMap.put(id, id);
+		innerMap.put(id, sample);
 
 		// Assert
-		assertEquals(id, decoder.translate(obj, null));
+		assertEquals(sample, decoder.translate(obj, null));
 	}
 
 	@Test(expected = ObjectNotFoundException.class)
@@ -35,7 +37,7 @@ public class ClientObjectDecoderTest {
 		final HashMap<String, Serializable> innerMap = new HashMap<>();
 		final MapContext context = new MapContext(id, innerMap);
 		final ClientObjectDecoder decoder = new ClientObjectDecoder(context);
-		final ProxiedObject obj = new ProxiedObject(id, String.class);
+		final ProxiedObject obj = new ProxiedObject(id, IDistributedSample.class);
 
 		// Act & Assert
 		try {
@@ -58,6 +60,17 @@ public class ClientObjectDecoderTest {
 			decoder.translate(id, null);
 		} catch(TranslationException ex) {
 			throw ex.getCause();
+		}
+	}
+
+	private interface ISample extends Serializable {}
+	@DistributedVersion(of = ISample.class) private interface IDistributedSample {}
+	private class DefaultSample implements ISample {
+		private static final long serialVersionUID = -2611473627324379861L;
+		@SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+		@Override
+		public boolean equals(Object obj) {
+			return true;
 		}
 	}
 }

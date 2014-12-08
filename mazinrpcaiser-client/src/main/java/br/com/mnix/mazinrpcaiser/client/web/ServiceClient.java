@@ -3,7 +3,6 @@ package br.com.mnix.mazinrpcaiser.client.web;
 import br.com.mnix.mazinrpcaiser.common.*;
 import br.com.mnix.mazinrpcaiser.common.exception.ServerExecutionException;
 import br.com.mnix.mazinrpcaiser.common.request.IReturn;
-import br.com.mnix.mazinrpcaiser.common.request.RequestUtils;
 import com.hazelcast.core.Message;
 import com.hazelcast.core.MessageListener;
 
@@ -51,7 +50,7 @@ public class ServiceClient implements IServiceClient, MessageListener {
 
 		RequestEnvelope requestEnvelope = new RequestEnvelope(topicId, getSessionData(), request);
 		String listenerId = mClient.addListener(topicId, this);
-		mClient.sendData(RequestUtils.getRequestGroup(request), requestEnvelope);
+		mClient.sendData(requestEnvelope);
 
 		new Timer().schedule(new TimeoutTimer(topicId, getSessionData()), timeout);
 		semaphore.acquire();

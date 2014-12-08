@@ -1,13 +1,9 @@
 package br.com.mnix.mazinrpcaiser.client.web;
 
 import br.com.mnix.mazinrpcaiser.client.HazelcastUtils;
-import br.com.mnix.mazinrpcaiser.client.web.DataGridClient;
-import br.com.mnix.mazinrpcaiser.client.web.IDataGridClient;
-import br.com.mnix.mazinrpcaiser.client.web.ServiceClient;
 import br.com.mnix.mazinrpcaiser.common.*;
 import br.com.mnix.mazinrpcaiser.common.exception.ServerExecutionException;
 import br.com.mnix.mazinrpcaiser.common.request.IReturn;
-import br.com.mnix.mazinrpcaiser.common.request.RequestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +42,7 @@ public class ServiceClientTest {
 			public void run() {
 				try {
 					BlockingQueue<RequestEnvelope> queue =
-							HazelcastUtils.getQueue(RequestUtils.getRequestGroup(StubActionData.class));
+							HazelcastUtils.getQueue(MazinRPCaiserConstants.COMMAND_QUEUE_ID);
 					RequestEnvelope action = queue.take();
 					HazelcastUtils.postMessage(
 							action.getTopicId(),

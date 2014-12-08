@@ -35,7 +35,7 @@ public final class SimpleApp {
 	public static void main(String[] args) throws Exception {
 		IDataGrid grid = DataGridFactory.makeDefaultDataGrid();
 		grid.raise();
-		TaskReceiver.setUpReceivers(grid);
+		TaskReceiver.setUpTaskReceiver(grid);
 		openSession1();
 		openSession2();
 		grid.shutdown();
